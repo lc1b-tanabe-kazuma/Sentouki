@@ -1,5 +1,5 @@
-#include "SceneTransition.h"
-#include "Fade.h"
+#include "engine/sceneEngine/SceneTransition.h"
+#include "engine/Fade.h"
 
 using namespace std;
 

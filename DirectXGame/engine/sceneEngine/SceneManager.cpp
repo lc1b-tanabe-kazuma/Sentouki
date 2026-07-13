@@ -1,6 +1,6 @@
-#include "SceneManager.h"
-#include "GameScene.h"
-#include "GameTitle.h"
+#include "engine/sceneEngine/SceneManager.h"
+#include "Scene/GameScene.h"
+#include "Scene/GameTitle.h"
 
 using namespace std;
 using namespace KamataEngine;

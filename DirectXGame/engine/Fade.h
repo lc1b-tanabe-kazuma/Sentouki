@@ -1,6 +1,6 @@
 #pragma once
 #include "KamataEngine.h"
-#include "TransitionBase.h"
+#include "engine/sceneEngine/TransitionBase.h"
 #include <functional>
 
 class Fade : public TransitionBase {
