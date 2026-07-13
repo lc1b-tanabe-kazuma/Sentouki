@@ -1,5 +1,5 @@
-#include "GameScene.h"
-#include "SceneManager.h"
+#include "Scene/GameScene.h"
+#include "engine/sceneEngine/SceneManager.h"
 
 void GameScene::Initialize() {
 

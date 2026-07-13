@@ -1,6 +1,6 @@
 #pragma once
-#include "SceneBase.h"
-#include "SceneTransition.h"
+#include "engine/sceneEngine/SceneBase.h"
+#include "engine/sceneEngine/SceneTransition.h"
 #include <map>
 #include <memory>
 #include <string>

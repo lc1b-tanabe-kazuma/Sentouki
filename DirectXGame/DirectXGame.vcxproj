@@ -84,7 +84,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;_DEBUG;USE_IMGUI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine;$(ProjectDir)Scene;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
@@ -115,7 +115,7 @@ xcopy "$(ProjectDir)..\External\KamataEngine\shaders" "$(ProjectDir)Resources\En
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine;$(ProjectDir)Scene;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <Optimization>MinSpace</Optimization>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -150,7 +150,7 @@ xcopy "$(ProjectDir)..\External\KamataEngine\shaders" "$(ProjectDir)Resources\En
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;USE_IMGUI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine;$(ProjectDir)Scene;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <Optimization>Disabled</Optimization>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -178,21 +178,21 @@ xcopy "$(ProjectDir)..\External\KamataEngine\shaders" "$(ProjectDir)Resources\En
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Fade.cpp" />
-    <ClCompile Include="GameScene.cpp" />
-    <ClCompile Include="GameTitle.cpp" />
+    <ClCompile Include="engine\Fade.cpp" />
+    <ClCompile Include="Scene\GameScene.cpp" />
+    <ClCompile Include="Scene\GameTitle.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="SceneManager.cpp" />
-    <ClCompile Include="SceneTransition.cpp" />
+    <ClCompile Include="engine\sceneEngine\SceneManager.cpp" />
+    <ClCompile Include="engine\sceneEngine\SceneTransition.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Fade.h" />
-    <ClInclude Include="GameScene.h" />
-    <ClInclude Include="GameTitle.h" />
-    <ClInclude Include="SceneBase.h" />
-    <ClInclude Include="SceneManager.h" />
-    <ClInclude Include="SceneTransition.h" />
-    <ClInclude Include="TransitionBase.h" />
+    <ClInclude Include="engine\Fade.h" />
+    <ClInclude Include="Scene\GameScene.h" />
+    <ClInclude Include="Scene\GameTitle.h" />
+    <ClInclude Include="engine\sceneEngine\SceneBase.h" />
+    <ClInclude Include="engine\sceneEngine\SceneManager.h" />
+    <ClInclude Include="engine\sceneEngine\SceneTransition.h" />
+    <ClInclude Include="engine\sceneEngine\TransitionBase.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

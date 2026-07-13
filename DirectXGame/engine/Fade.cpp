@@ -1,4 +1,4 @@
-#include "Fade.h"
+#include "engine/Fade.h"
 using namespace KamataEngine;
 
 Fade::Fade(std::function<void()> onFadeOut, int fadeOutFrames, int fadeInFrames) : fadeOutFrames_(fadeOutFrames), fadeInFrames_(fadeInFrames), onFadeOut_(onFadeOut) {

@@ -1,13 +1,13 @@
 #pragma once
 #include "KamataEngine.h"
-#include "SceneBase.h"
+#include "engine/sceneEngine/SceneBase.h"
 
 using namespace KamataEngine;
 
 // ゲームシーン
-class GameTitle : public SceneBase {
+class GameScene : public SceneBase {
 public:
-	GameTitle(KamataEngine::Input* input) : SceneBase(input) { }
+	GameScene(KamataEngine::Input* input) : SceneBase(input) { }
 
 	// 初期化
 	void Initialize() override;
