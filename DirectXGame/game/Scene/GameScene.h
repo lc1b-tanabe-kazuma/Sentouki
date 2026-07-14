@@ -1,6 +1,7 @@
 #pragma once
 #include "KamataEngine.h"
 #include "engine/sceneEngine/SceneBase.h"
+#include "Aim.h"
 
 using namespace KamataEngine;
 
@@ -31,4 +32,7 @@ private:
 
 	// ワールドトランスフォーム
 	KamataEngine::WorldTransform worldTransform_;
+
+	// UI
+	Aim* aim_ = nullptr;
 };
