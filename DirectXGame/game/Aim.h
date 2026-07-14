@@ -24,6 +24,9 @@ public:
 
 	Ray GetRayFromMouse();
 
+	// 座標のゲッター
+	KamataEngine::Vector2 GetWorldPosition() const { return mousePos_; }
+
 	~Aim();
 
 private:
