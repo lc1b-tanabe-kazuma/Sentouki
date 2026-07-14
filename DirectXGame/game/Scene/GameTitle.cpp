@@ -7,10 +7,6 @@ void GameTitle::Initialize() {
 	aim_->Initialize(&camera_);
 }
 
-void GameTitle::Finalize() { 
-	delete aim_;
-}
-
 void GameTitle::Update() {
 	if(Input::GetInstance()->TriggerKey(DIK_SPACE)) {
 		SceneManager::GetInstance()->ChangeScene("Game");

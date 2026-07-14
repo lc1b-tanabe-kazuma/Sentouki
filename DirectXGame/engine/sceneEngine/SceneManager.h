@@ -1,6 +1,6 @@
 #pragma once
-#include "engine/sceneEngine/SceneBase.h"
-#include "engine/sceneEngine/SceneTransition.h"
+#include "SceneBase.h"
+#include "SceneTransition.h"
 #include <map>
 #include <memory>
 #include <string>
@@ -12,8 +12,6 @@ public:
 
 	// 初期化
 	void Initialize();
-	// 終了
-	void Finalize();
 
 	/// <summary>
 	/// シーンの登録
@@ -38,17 +36,12 @@ public:
 	/// </summary>
 	void Draw();
 
-	void SetStage(int stage) { stageNumber_ = stage; }
-
-	int GetStage() const { return stageNumber_; }
-
-	void SetScore(int score) { score_ = score; }
-
-	int GetScore() const { return score_; }
+	static void Finalize();
 
 private:
 	// シーン保存用
 	std::map<std::string, std::unique_ptr<SceneBase>> scenes_;
+
 	// 現在のシーン
 	SceneBase* currentScene_ = nullptr;
 	// Input
@@ -63,7 +56,4 @@ private:
 	~SceneManager() = default;
 	SceneManager(const SceneManager&) = delete;
 	SceneManager& operator=(const SceneManager&) = delete;
-
-	int stageNumber_ = 0;
-	int score_ = 0;
 };

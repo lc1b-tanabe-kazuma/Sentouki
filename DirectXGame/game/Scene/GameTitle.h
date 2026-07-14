@@ -13,9 +13,6 @@ public:
 	// 初期化
 	void Initialize() override;
 
-	// 終了
-	void Finalize() override;
-
 	// 更新
 	void Update() override;
 
