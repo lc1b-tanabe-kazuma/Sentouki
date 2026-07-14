@@ -30,9 +30,27 @@ void Aim::Initialize(Camera* camera) {
 
 void Aim::Update() {
 
+	isAttac_ = false;
+
 	mousePos_ = input_->GetMousePosition();
 
-	sprite_->SetPosition({ mousePos_.x, mousePos_.y });
+	// ウィンドウサイズを取得
+	RECT rect;
+	GetClientRect(WinApp::GetInstance()->GetHwnd(), &rect);
+
+	// ウィンドウサイズをfloatに変換
+	width = static_cast<float>(rect.right - rect.left);
+	height = static_cast<float>(rect.bottom - rect.top);
+
+	// マウス座標をUI座標に変換
+	float scaleX = 1280.0f / rect.right;
+	float scaleY = 720.0f / rect.bottom;
+
+	// マウス座標をUI座標に変換
+	Vector2 uiMouse = { mousePos_.x * scaleX, mousePos_.y * scaleY };
+
+	// スプライトの座標をUI座標に設定
+	sprite_->SetPosition(uiMouse);
 
 	// クールタイムを減らす
 	coolTime_ -= 1.0f / 30.0f;
@@ -45,10 +63,6 @@ void Aim::Update() {
 			isAttac_ = true;
 			coolTime_ = 0.3f;
 		}
-	} else {
-
-		// 打てない時は攻撃してない状態に
-		isAttac_ = false;
 	}
 
 #ifdef _DEBUG
@@ -82,8 +96,8 @@ Vector3 Aim::GetForward() {
 }
 
 Ray Aim::GetRayFromMouse() {
-	float ndcX = (2.0f * mousePos_.x / windowWidth) - 1.0f;
-	float ndcY = 1.0f - (2.0f * mousePos_.y / windowHeight);
+	float ndcX = (2.0f * mousePos_.x / width) - 1.0f;
+	float ndcY = 1.0f - (2.0f * mousePos_.y / height);
 
 	Vector4 clip = { ndcX, ndcY, 1.0f, 1.0f }; // ★ z=1（遠平面）
 

@@ -43,8 +43,8 @@ private:
 	KamataEngine::Vector2 mousePos_;
 
 	// ウィンドウの幅と高さ
-	float windowWidth = 1280.0f;
-	float windowHeight = 720.0f;
+	float width = 1280.0f;
+	float height = 720.0f;
 
 	// 攻撃
 	bool isAttac_ = false;
