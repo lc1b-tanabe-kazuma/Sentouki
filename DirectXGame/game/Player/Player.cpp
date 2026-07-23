@@ -1,8 +1,9 @@
 #include "Player.h"
 #include "MyMath.h"
+#include "Aim.h"
 using namespace KamataEngine;
 
-void Player::Initialize(Model* model, Camera* camera, Model* bulletModel) {
+void Player::Initialize(Model* model, Camera* camera, Model* bulletModel, Aim* aim) {
 	model_ = model;
 	camera_ = camera;
 	bulletModel_ = bulletModel;
@@ -14,6 +15,8 @@ void Player::Initialize(Model* model, Camera* camera, Model* bulletModel) {
 	worldTransform_.rotation_.y = 3.14f / 2.0f;
 
 	input_ = Input::GetInstance();
+
+	aim_ = aim;
 }
 
 Player::~Player() {
@@ -73,28 +76,32 @@ void Player::Move() {
 	WorldTransformUpdate(worldTransform_);
 }
 
-void Player::Attack(Vector2 aimPos) {
+void Player::Attack() {
 
 	// 弾を生成
 	PlayerBullet* newBullet = new PlayerBullet();
+	
+	// Aimからマウス方向のRayを取得
+	Ray ray = aim_->GetRayFromMouse();
 
-	// 弾の発射位置(自機のワールド座標)
-	Vector3 bulletStartPos = GetWorldPosition();
+	// Z=22.5の平面との交点
+	float t = (kAimZ - ray.origin.z) / ray.direction.z;
 
-	// プレイヤー位置
-	Vector3 playerPos = worldTransform_.translation_;
+	Vector3 targetPos = ray.origin + ray.direction * t;
 
-	// プレイヤー位置から照準の位置への方向ベクトルを計算
-	Vector3 bulletDir = { aimPos.x - playerPos.x, aimPos.y - playerPos.y, 0.0f };
+	// プレイヤーから交点へ向かう
+	Vector3 bulletDir = Normalize(targetPos - GetWorldPosition());
 
-	// 弾速
-	const float kBulletSpeed = 0.1f;
 	Vector3 bulletVelocity = bulletDir * kBulletSpeed;
 
 	// 弾の初期化
-	newBullet->Initialize(bulletModel_, bulletStartPos, bulletVelocity);
+	newBullet->Initialize(
+		bulletModel_,
+		GetWorldPosition(),
+		bulletVelocity
+	);
 
-	// 弾をセット
+	// リストへ追加
 	bullets_.push_back(newBullet);
 }
 

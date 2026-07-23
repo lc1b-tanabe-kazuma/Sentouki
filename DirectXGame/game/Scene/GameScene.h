@@ -3,6 +3,7 @@
 #include "engine/sceneEngine/SceneBase.h"
 #include "Aim.h"
 #include "player/Player.h"
+#include "enemy/Enemy.h"
 
 using namespace KamataEngine;
 
@@ -24,6 +25,20 @@ public:
 
 	KamataEngine::Vector3 GetMouseWorldPosition();
 
+	// 敵のスクリプトファイル読み込み
+	void LoadEnemyPopData();
+
+	// 敵のスクリプト実行
+	void UpdateEnemyPopcomand();
+
+	// 敵の出現待機中
+	bool IsWaiting() const { return isWaiting_; }
+
+	// 敵が全員WAITコマンドの時間が0になっていてかつ全員デリートされたか
+	bool IsAllEnemiesWaited() const { return enemies_.empty() && !isWaiting_ && enemyPopComands.eof(); }
+
+	void OnCollision();
+
 private:
 
 	// 3Dモデル
@@ -42,4 +57,17 @@ private:
 	Player* player_ = nullptr;
 	KamataEngine::Model* modelPlayer_ = nullptr;
 	KamataEngine::Model* modelBullet_ = nullptr;
+
+	// 敵を複数化(リスト)
+	std::list<Enemy*> enemies_;
+	KamataEngine::Model* modelEnemy_ = nullptr;
+
+	// 敵の発生コマンド
+	std::stringstream enemyPopComands;
+
+	// 敵の出現の待機中フラグ
+	bool isWaiting_ = false;
+
+	// 敵の出現の待機タイマー
+	int32_t waitTimer_ = 0;
 };

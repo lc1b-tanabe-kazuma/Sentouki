@@ -118,8 +118,13 @@ Ray Aim::GetRayFromMouse() {
 	Vector3 cameraPos = { invView.m[3][0], invView.m[3][1], invView.m[3][2] };
 
 	// 方向 = ワールド点 - カメラ位置
-	Vector3 dir = { world.x - cameraPos.x, world.y - cameraPos.y, world.z - cameraPos.z };
-	Normalize(dir);
+	Vector3 dir = {
+		world.x - cameraPos.x,
+		world.y - cameraPos.y,
+		world.z - cameraPos.z
+	};
+
+	dir = Normalize(dir);
 
 	ray_.origin = cameraPos;
 	ray_.direction = dir;

@@ -2,18 +2,24 @@
 #include "KamataEngine.h"
 #include "PlayerBullet.h"
 
+// 前方宣言
+class Aim;
+
 class Player {
 public:
-	void Initialize(KamataEngine::Model* model, KamataEngine::Camera* camera, KamataEngine::Model* bulletModel);
+	void Initialize(KamataEngine::Model* model, KamataEngine::Camera* camera, KamataEngine::Model* bulletModel, Aim* aim);
 	void Update();
 	void Draw();
 
 	void Move();
 
-	void Attack(KamataEngine::Vector2 aimPos);
+	void Attack();
 
 	// ワールド座標を取得
 	KamataEngine::Vector3 GetWorldPosition() const;
+
+	// 弾リストを取得
+	const std::list<PlayerBullet*>& GetBullets() const { return bullets_; }
 
 	~Player();
 
@@ -33,8 +39,13 @@ private:
 	KamataEngine::Model* bulletModel_ = nullptr;
 
 	// 弾の速度
-	KamataEngine::Vector3 kBulletVelocity = { 0.0f, 0.0f, 1.0f };
+	float kBulletSpeed = 1.0f;
 
 	// 半径
 	const float kRadius = 1.0f;
+
+	//
+	Aim* aim_ = nullptr;
+
+	const float kAimZ = 22.5f;
 };
