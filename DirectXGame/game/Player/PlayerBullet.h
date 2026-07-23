@@ -11,7 +11,7 @@ public:
 
 	bool IsDead() { return isDead_; }
 
-	void Oncollosion();
+	void OnCollision() { isDead_ = true; }
 
 	// プレイヤーの弾の位置を取得
 	KamataEngine::Vector3 GetPosition();

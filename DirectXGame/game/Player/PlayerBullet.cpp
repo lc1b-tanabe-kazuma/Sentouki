@@ -55,8 +55,6 @@ void PlayerBullet::Draw(const Camera& camera) {
 	model_->Draw(worldTranseform_, camera);
 }
 
-void PlayerBullet::Oncollosion() { isDead_ = true; }
-
 Vector3 PlayerBullet::GetPosition() {
 	// ワールド座標を入れる変数
 	Vector3 worldPos;
