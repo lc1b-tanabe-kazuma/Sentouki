@@ -19,6 +19,10 @@ GameScene::~GameScene() {
 		delete enemy;
 	}
 	delete modelEnemy_;
+	delete modelSkydome_;
+	delete skydome_;
+	delete modelGround_;
+	delete ground_;
 }
 
 void GameScene::Initialize() {
@@ -41,6 +45,18 @@ void GameScene::Initialize() {
 
 	// 敵モデル
 	modelEnemy_ = Model::CreateFromOBJ("enemy", true);
+
+	// 天球
+	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
+	skydome_ = new Skydome;
+	skydome_->Initialize(modelSkydome_, &camera_);
+
+	// 地面モデルの作成
+	modelGround_ = Model::CreateFromOBJ("Ground", true);
+	// 地面の生成
+	ground_ = new Ground();
+	// 地面の初期化
+	ground_->Initialize(modelGround_, &camera_);
 }
 
 void GameScene::Update() {
@@ -88,6 +104,10 @@ void GameScene::Update() {
 	// 当たり判定
 	OnCollision();
 
+	skydome_->Update();
+
+	ground_->Update();
+
 	if(input_->TriggerKey(DIK_SPACE)) {
 		SceneManager::GetInstance()->ChangeScene("Title");
 	}
@@ -109,6 +129,9 @@ void GameScene::Draw() {
 	for(Enemy* enemy : enemies_) {
 		enemy->Draw();
 	}
+
+	skydome_->Draw();
+	ground_->Draw();
 
 	// 3Dオブジェクト後処理
 	Model::PostDraw();
