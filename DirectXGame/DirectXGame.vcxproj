@@ -183,12 +183,14 @@ xcopy "$(ProjectDir)..\External\KamataEngine\shaders" "$(ProjectDir)Resources\En
     <ClCompile Include="engine\Fade.cpp" />
     <ClCompile Include="game\Scene\GameScene.cpp" />
     <ClCompile Include="game\Scene\GameTitle.cpp" />
+    <ClCompile Include="game\Grand\Ground.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\sceneEngine\SceneManager.cpp" />
     <ClCompile Include="engine\sceneEngine\SceneTransition.cpp" />
     <ClCompile Include="engine\MyMath.cpp" />
     <ClCompile Include="game\player\Player.cpp" />
     <ClCompile Include="game\player\PlayerBullet.cpp" />
+    <ClCompile Include="game\Skydome\Skydome.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\enemy\Enemy.h" />
@@ -203,6 +205,8 @@ xcopy "$(ProjectDir)..\External\KamataEngine\shaders" "$(ProjectDir)Resources\En
     <ClInclude Include="engine\MyMath.h" />
     <ClInclude Include="game\player\Player.h" />
     <ClInclude Include="game\player\PlayerBullet.h" />
+    <ClInclude Include="game\Skydome\Skydome.h" />
+    <ClInclude Include="game\Grand\Ground.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

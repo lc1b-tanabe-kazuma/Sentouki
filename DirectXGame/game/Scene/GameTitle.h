@@ -2,6 +2,8 @@
 #include "KamataEngine.h"
 #include "engine/sceneEngine/SceneBase.h"
 #include "Aim.h"
+#include "Skydome/Skydome.h"
+#include "Grand/Ground.h"
 
 using namespace KamataEngine;
 
@@ -18,6 +20,8 @@ public:
 
 	// 描画
 	void Draw() override;
+
+	~GameTitle();
 
 private:
 
@@ -36,4 +40,11 @@ private:
 	Aim* aim_ = nullptr;
 
 	void UpdateUI();
+
+	Skydome* skydome_ = nullptr;
+	KamataEngine::Model* modelSkydome_;
+
+	// 地面
+	Ground* ground_ = nullptr;
+	KamataEngine::Model* modelGround_;
 };

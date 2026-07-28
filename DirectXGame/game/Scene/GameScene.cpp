@@ -19,6 +19,10 @@ GameScene::~GameScene() {
 		delete enemy;
 	}
 	delete modelEnemy_;
+	delete modelSkydome_;
+	delete skydome_;
+	delete modelGround_;
+	delete ground_;
 }
 
 void GameScene::Initialize() {
@@ -41,6 +45,18 @@ void GameScene::Initialize() {
 
 	// 敵モデル
 	modelEnemy_ = Model::CreateFromOBJ("enemy", true);
+
+	// 天球
+	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
+	skydome_ = new Skydome;
+	skydome_->Initialize(modelSkydome_, &camera_);
+
+	// 地面モデルの作成
+	modelGround_ = Model::CreateFromOBJ("Ground", true);
+	// 地面の生成
+	ground_ = new Ground();
+	// 地面の初期化
+	ground_->Initialize(modelGround_, &camera_);
 }
 
 void GameScene::Update() {
@@ -74,6 +90,12 @@ void GameScene::Update() {
 		player_->Attack();
 	}
 
+	ImGui::Begin("camera");
+	ImGui::DragFloat3("rote",&camera_.rotation_.x,0.1f);
+	ImGui::DragFloat3("transe", &camera_.translation_.x, 0.1f);
+	ImGui::End();
+	camera_.UpdateMatrix();
+
 	// 敵のスクリプト実行
 	UpdateEnemyPopcomand();
 
@@ -87,6 +109,9 @@ void GameScene::Update() {
 
 	// 当たり判定
 	OnCollision();
+
+	ground_->Update();
+	skydome_->Update();
 
 	if(input_->TriggerKey(DIK_SPACE)) {
 		SceneManager::GetInstance()->ChangeScene("Title");
@@ -109,6 +134,9 @@ void GameScene::Draw() {
 	for(Enemy* enemy : enemies_) {
 		enemy->Draw();
 	}
+
+	ground_->Draw();
+	skydome_->Draw();
 
 	// 3Dオブジェクト後処理
 	Model::PostDraw();
@@ -138,7 +166,10 @@ void GameScene::LoadEnemyPopData() {
 	// ファイルを開く
 	ifstream file;
 	file.open("Resources/enemy/enemyPopData.csv");
+
+#ifdef DEBUG
 	assert(file.is_open());
+#endif // DEBUG
 
 	// ファイルの内容を文字列ストリームにコピー
 	enemyPopComands << file.rdbuf();

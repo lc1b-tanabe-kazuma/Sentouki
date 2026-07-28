@@ -4,6 +4,8 @@
 #include "Aim.h"
 #include "player/Player.h"
 #include "enemy/Enemy.h"
+#include "Skydome/Skydome.h"
+#include "Grand/Ground.h"
 
 using namespace KamataEngine;
 
@@ -70,4 +72,12 @@ private:
 
 	// 敵の出現の待機タイマー
 	int32_t waitTimer_ = 0;
+
+	// 天球
+	Skydome* skydome_ = nullptr;
+	KamataEngine::Model* modelSkydome_ = nullptr;
+
+	// 地面
+	Ground* ground_ = nullptr;
+	KamataEngine::Model* modelGround_ = nullptr;
 };
