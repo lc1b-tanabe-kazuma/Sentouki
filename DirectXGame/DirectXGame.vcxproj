@@ -181,6 +181,7 @@ xcopy "$(ProjectDir)..\External\KamataEngine\shaders" "$(ProjectDir)Resources\En
     <ClCompile Include="game\enemy\Enemy.cpp" />
     <ClCompile Include="game\Aim.cpp" />
     <ClCompile Include="engine\Fade.cpp" />
+    <ClCompile Include="game\Scene\GameClear.cpp" />
     <ClCompile Include="game\Scene\GameScene.cpp" />
     <ClCompile Include="game\Scene\GameTitle.cpp" />
     <ClCompile Include="game\Grand\Ground.cpp" />
@@ -196,6 +197,7 @@ xcopy "$(ProjectDir)..\External\KamataEngine\shaders" "$(ProjectDir)Resources\En
     <ClInclude Include="game\enemy\Enemy.h" />
     <ClInclude Include="game\Aim.h" />
     <ClInclude Include="engine\Fade.h" />
+    <ClInclude Include="game\Scene\GameClear.h" />
     <ClInclude Include="game\Scene\GameScene.h" />
     <ClInclude Include="game\Scene\GameTitle.h" />
     <ClInclude Include="engine\sceneEngine\SceneBase.h" />
