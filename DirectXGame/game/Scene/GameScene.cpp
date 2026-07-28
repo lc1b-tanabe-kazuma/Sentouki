@@ -114,7 +114,7 @@ void GameScene::Update() {
 	skydome_->Update();
 
 	if(input_->TriggerKey(DIK_SPACE)) {
-		SceneManager::GetInstance()->ChangeScene("Title");
+		SceneManager::GetInstance()->ChangeScene("GameClear");
 	}
 }
 
