@@ -90,6 +90,12 @@ void GameScene::Update() {
 		player_->Attack();
 	}
 
+	ImGui::Begin("camera");
+	ImGui::DragFloat3("rote",&camera_.rotation_.x,0.1f);
+	ImGui::DragFloat3("transe", &camera_.translation_.x, 0.1f);
+	ImGui::End();
+	camera_.UpdateMatrix();
+
 	// 敵のスクリプト実行
 	UpdateEnemyPopcomand();
 
@@ -104,9 +110,8 @@ void GameScene::Update() {
 	// 当たり判定
 	OnCollision();
 
-	skydome_->Update();
-
 	ground_->Update();
+	skydome_->Update();
 
 	if(input_->TriggerKey(DIK_SPACE)) {
 		SceneManager::GetInstance()->ChangeScene("Title");
@@ -130,8 +135,8 @@ void GameScene::Draw() {
 		enemy->Draw();
 	}
 
-	skydome_->Draw();
 	ground_->Draw();
+	skydome_->Draw();
 
 	// 3Dオブジェクト後処理
 	Model::PostDraw();
@@ -161,7 +166,10 @@ void GameScene::LoadEnemyPopData() {
 	// ファイルを開く
 	ifstream file;
 	file.open("Resources/enemy/enemyPopData.csv");
+
+#ifdef DEBUG
 	assert(file.is_open());
+#endif // DEBUG
 
 	// ファイルの内容を文字列ストリームにコピー
 	enemyPopComands << file.rdbuf();

@@ -7,6 +7,7 @@ void Skydome::Initialize(Model* model, Camera* camera) {
 
 	model_ = model;
 	camera_ = camera;
+	worldTransform_.translation_.y = kHeight;
 }
 
 // 更新

@@ -79,5 +79,5 @@ private:
 
 	// 地面
 	Ground* ground_ = nullptr;
-	KamataEngine::Model* modelGround_;
+	KamataEngine::Model* modelGround_ = nullptr;
 };

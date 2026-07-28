@@ -1,12 +1,10 @@
 #pragma once
 #include "KamataEngine.h"
 
-using namespace KamataEngine;
-
 class Ground {
 public:
 	// 初期化
-	void Initialize(Model* model, Camera* camera);
+	void Initialize(KamataEngine::Model* model, KamataEngine::Camera* camera);
 
 	// 更新
 	void Update();
@@ -16,14 +14,13 @@ public:
 
 private:
 	// ワールド変換データ
-	WorldTransform worldTransform_;
+	KamataEngine::WorldTransform worldTransform_;
 
 	// モデル
-	Model* model_ = nullptr;
+	KamataEngine::Model* model_ = nullptr;
 
 	// カメラ
-	Camera* camera_;
+	KamataEngine::Camera* camera_;
 
-	// スカイドーム
-	Ground* ground = nullptr;
+	const float kHeight = -15.0f;
 };

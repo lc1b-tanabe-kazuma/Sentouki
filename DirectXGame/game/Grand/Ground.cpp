@@ -1,6 +1,8 @@
 #include "Grand/Ground.h"
 #include "MyMath.h"
 
+using namespace KamataEngine;
+
 // 初期化
 void Ground::Initialize(Model* model, Camera* camera) {
 	worldTransform_.Initialize();
@@ -8,8 +10,7 @@ void Ground::Initialize(Model* model, Camera* camera) {
 	model_ = model;
 	camera_ = camera;
 
-	worldTransform_.translation_ = { 0.0f, 1.0f, 0.0f };
-	worldTransform_.scale_ = { 10.1f, 10.01f, 10.01f };
+	worldTransform_.translation_.y = kHeight;
 }
 
 // 更新

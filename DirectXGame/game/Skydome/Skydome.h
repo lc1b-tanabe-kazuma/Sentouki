@@ -28,4 +28,6 @@ private:
 	Skydome* skydome_ = nullptr;
 
 	float roteSpeed = 0.0002f;
+
+	const float kHeight = -15.0f;
 };

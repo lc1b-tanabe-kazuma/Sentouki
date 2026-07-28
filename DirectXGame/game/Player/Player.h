@@ -48,4 +48,7 @@ private:
 	Aim* aim_ = nullptr;
 
 	const float kAimZ = 22.5f;
+
+	const float kMoveLimitX = 30.0f;
+	const float kMoveLimitY = 10.0f;
 };

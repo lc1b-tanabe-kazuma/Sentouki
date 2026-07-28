@@ -1,6 +1,8 @@
+#define NOMINMAX
 #include "Player.h"
 #include "MyMath.h"
 #include "Aim.h"
+
 using namespace KamataEngine;
 
 void Player::Initialize(Model* model, Camera* camera, Model* bulletModel, Aim* aim) {
@@ -72,6 +74,12 @@ void Player::Move() {
 		worldTransform_.translation_.x += moveSpeed_;
 	}
 
+	// 制限を設ける
+	worldTransform_.translation_.x = std::max(worldTransform_.translation_.x, -kMoveLimitX);
+	worldTransform_.translation_.x = std::min(worldTransform_.translation_.x, +kMoveLimitX);
+	worldTransform_.translation_.y = std::max(worldTransform_.translation_.y, -kMoveLimitY);
+	worldTransform_.translation_.y = std::min(worldTransform_.translation_.y, kMoveLimitY);
+
 	// ワールド変換行列の更新
 	WorldTransformUpdate(worldTransform_);
 }
@@ -80,7 +88,7 @@ void Player::Attack() {
 
 	// 弾を生成
 	PlayerBullet* newBullet = new PlayerBullet();
-	
+
 	// Aimからマウス方向のRayを取得
 	Ray ray = aim_->GetRayFromMouse();
 
