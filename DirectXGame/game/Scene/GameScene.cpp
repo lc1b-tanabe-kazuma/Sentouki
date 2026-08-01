@@ -90,11 +90,13 @@ void GameScene::Update() {
 		player_->Attack();
 	}
 
-	ImGui::Begin("camera");
+#ifdef DEBUG
+ImGui::Begin("camera");
 	ImGui::DragFloat3("rote",&camera_.rotation_.x,0.1f);
 	ImGui::DragFloat3("transe", &camera_.translation_.x, 0.1f);
 	ImGui::End();
 	camera_.UpdateMatrix();
+#endif // DEBUG
 
 	// 敵のスクリプト実行
 	UpdateEnemyPopcomand();
