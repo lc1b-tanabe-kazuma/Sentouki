@@ -84,7 +84,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;_DEBUG;USE_IMGUI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine;$(ProjectDir)Scene;$(ProjectDir)game;$(ProjectDir)player;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine;$(ProjectDir)Scene;$(ProjectDir)game;$(ProjectDir)player;$(ProjectDir)UI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
@@ -114,7 +114,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine;$(ProjectDir)Scene;$(ProjectDir)game;$(ProjectDir)player;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine;$(ProjectDir)Scene;$(ProjectDir)game;$(ProjectDir)player;$(ProjectDir)UI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <Optimization>MinSpace</Optimization>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -148,7 +148,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;USE_IMGUI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine;$(ProjectDir)Scene;$(ProjectDir)game;$(ProjectDir)player;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine;$(ProjectDir)Scene;$(ProjectDir)game;$(ProjectDir)player;$(ProjectDir)UI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <Optimization>Disabled</Optimization>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -176,12 +176,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="game\enemy\Enemy.cpp" />
-    <ClCompile Include="game\Aim.cpp" />
+    <ClCompile Include="game\UI\Aim.cpp" />
     <ClCompile Include="engine\Fade.cpp" />
     <ClCompile Include="game\Scene\GameClear.cpp" />
     <ClCompile Include="game\Scene\GameScene.cpp" />
     <ClCompile Include="game\Scene\GameTitle.cpp" />
     <ClCompile Include="game\Grand\Ground.cpp" />
+    <ClCompile Include="game\UI\LockOnMark.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\sceneEngine\SceneManager.cpp" />
     <ClCompile Include="engine\sceneEngine\SceneTransition.cpp" />
@@ -192,7 +193,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\enemy\Enemy.h" />
-    <ClInclude Include="game\Aim.h" />
+    <ClInclude Include="game\UI\Aim.h" />
     <ClInclude Include="engine\Fade.h" />
     <ClInclude Include="game\Scene\GameClear.h" />
     <ClInclude Include="game\Scene\GameScene.h" />
@@ -206,6 +207,7 @@
     <ClInclude Include="game\player\PlayerBullet.h" />
     <ClInclude Include="game\Skydome\Skydome.h" />
     <ClInclude Include="game\Grand\Ground.h" />
+    <ClInclude Include="game\UI\LockOnMark.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

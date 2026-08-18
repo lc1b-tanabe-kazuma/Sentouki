@@ -1,7 +1,8 @@
 #define NOMINMAX
 #include "Player.h"
 #include "MyMath.h"
-#include "Aim.h"
+#include "UI/Aim.h"
+#include "enemy/Enemy.h"
 
 using namespace KamataEngine;
 
@@ -84,23 +85,40 @@ void Player::Move() {
 	WorldTransformUpdate(worldTransform_);
 }
 
-void Player::Attack() {
+void Player::Attack(Enemy* target) {
 
 	// 弾を生成
 	PlayerBullet* newBullet = new PlayerBullet();
 
-	// Aimからマウス方向のRayを取得
-	Ray ray = aim_->GetRayFromMouse();
+	Vector3 bulletDir;
 
-	// Z=22.5の平面との交点
-	float t = (kAimZ - ray.origin.z) / ray.direction.z;
+	if(target != nullptr) {
 
-	Vector3 targetPos = ray.origin + ray.direction * t;
+		// ロックオンしている場合
+		Vector3 targetPos = target->GetWorldPosition();
 
-	// プレイヤーから交点へ向かう
-	Vector3 bulletDir = Normalize(targetPos - GetWorldPosition());
+		// プレイヤー → 敵
+		bulletDir =
+			Normalize(targetPos - GetWorldPosition());
 
-	Vector3 bulletVelocity = bulletDir * kBulletSpeed;
+	} else {
+
+		// ロックオンしていない場合は今まで通り
+		Ray ray = aim_->GetRayFromMouse();
+
+		// Z=22.5の平面との交点
+		float t = (kAimZ - ray.origin.z) / ray.direction.z;
+
+		Vector3 targetPos =
+			ray.origin + ray.direction * t;
+
+		// プレイヤー → 交点
+		bulletDir =
+			Normalize(targetPos - GetWorldPosition());
+	}
+
+	Vector3 bulletVelocity =
+		bulletDir * kBulletSpeed;
 
 	// 弾の初期化
 	newBullet->Initialize(
@@ -108,6 +126,8 @@ void Player::Attack() {
 		GetWorldPosition(),
 		bulletVelocity
 	);
+
+	newBullet->SetTarget(target);
 
 	// リストへ追加
 	bullets_.push_back(newBullet);

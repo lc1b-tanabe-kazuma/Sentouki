@@ -1,6 +1,9 @@
 #pragma once
 #include "KamataEngine.h"
 
+// 前方宣言
+class Enemy;
+
 class PlayerBullet {
 public:
 	void Initialize(KamataEngine::Model* model, const KamataEngine::Vector3& position, KamataEngine::Vector3& velocity);
@@ -21,6 +24,11 @@ public:
 
 	// スケール設定
 	void setScale(const KamataEngine::Vector3& scale) { worldTranseform_.scale_ = scale; }
+
+	// 目標の敵を設定
+	void SetTarget(Enemy* target) {
+		target_ = target;
+	}
 
 private:
 	// ワールド変換データ
@@ -43,4 +51,10 @@ private:
 
 	// 半径
 	const float kRadius = 1.0f;
+
+	// 目標の敵
+	Enemy* target_ = nullptr;
+
+	// 弾の速度
+	const float kBulletSpeed = 0.5f;
 };

@@ -1,6 +1,7 @@
 #include "PlayerBullet.h"
 #include "MYMath.h"
 #include "imgui.h"
+#include "enemy/Enemy.h"
 
 using namespace KamataEngine;
 
@@ -30,6 +31,26 @@ void PlayerBullet::Update() {
 	// 時間経過で弾を消す
 	if(--deathTimer_ <= 0) {
 		isDead_ = true;
+	}
+
+	// ロックオンしている場合
+	if(target_ != nullptr && !target_->IsDead()) {
+
+		Vector3 bulletPos =
+			worldTranseform_.translation_;
+
+		Vector3 targetPos =
+			target_->GetWorldPosition();
+
+		// 弾 → 敵
+		Vector3 direction =
+			targetPos - bulletPos;
+
+		direction = Normalize(direction);
+
+		// 敵の方向へ速度を変更
+		velocity_ =
+			direction * kBulletSpeed;
 	}
 
 	// 移動

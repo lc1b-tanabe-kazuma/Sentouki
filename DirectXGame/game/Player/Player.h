@@ -4,6 +4,7 @@
 
 // 前方宣言
 class Aim;
+class Enemy;
 
 class Player {
 public:
@@ -13,7 +14,7 @@ public:
 
 	void Move();
 
-	void Attack();
+	void Attack(Enemy* target);
 
 	// ワールド座標を取得
 	KamataEngine::Vector3 GetWorldPosition() const;

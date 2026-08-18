@@ -1,7 +1,7 @@
 #pragma once
 #include "KamataEngine.h"
 #include "engine/sceneEngine/SceneBase.h"
-#include "Aim.h"
+#include "UI/Aim.h"
 #include "Skydome/Skydome.h"
 #include "Grand/Ground.h"
 

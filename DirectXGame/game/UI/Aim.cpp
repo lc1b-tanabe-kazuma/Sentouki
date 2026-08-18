@@ -78,6 +78,64 @@ void Aim::Update() {
 #endif // DEBUG
 }
 
+Ray Aim::GetRayFromMouse() {
+
+	// マウス座標をUI座標に変換
+	float scaleX = 1280.0f / width;
+	float scaleY = 720.0f / height;
+
+	Vector2 uiMouse = {
+		mousePos_.x * scaleX,
+		mousePos_.y * scaleY
+	};
+
+	// UI座標 → NDC座標
+	float ndcX = (2.0f * uiMouse.x / 1280.0f) - 1.0f;
+	float ndcY = 1.0f - (2.0f * uiMouse.y / 720.0f);
+
+	Vector4 clip = {
+		ndcX,
+		ndcY,
+		1.0f,
+		1.0f
+	};
+
+	Matrix4x4 invProj = Inverse(camera_->matProjection);
+	Matrix4x4 invView = Inverse(camera_->matView);
+
+	// Clip → View
+	Vector4 view = Multiply(clip, invProj);
+
+	view.x /= view.w;
+	view.y /= view.w;
+	view.z /= view.w;
+	view.w = 1.0f;
+
+	// View → World
+	Vector4 world = Multiply(view, invView);
+
+	// カメラ位置
+	Vector3 cameraPos = {
+		invView.m[3][0],
+		invView.m[3][1],
+		invView.m[3][2]
+	};
+
+	// カメラ → マウス位置
+	Vector3 dir = {
+		world.x - cameraPos.x,
+		world.y - cameraPos.y,
+		world.z - cameraPos.z
+	};
+
+	dir = Normalize(dir);
+
+	ray_.origin = cameraPos;
+	ray_.direction = dir;
+
+	return ray_;
+}
+
 void Aim::Draw() { sprite_->Draw(); }
 
 Vector3 Aim::GetForward() {
@@ -93,43 +151,6 @@ Vector3 Aim::GetForward() {
 	forward.z /= len;
 
 	return forward;
-}
-
-Ray Aim::GetRayFromMouse() {
-	float ndcX = (2.0f * mousePos_.x / width) - 1.0f;
-	float ndcY = 1.0f - (2.0f * mousePos_.y / height);
-
-	Vector4 clip = { ndcX, ndcY, 1.0f, 1.0f }; // ★ z=1（遠平面）
-
-	Matrix4x4 invProj = Inverse(camera_->matProjection);
-	Matrix4x4 invView = Inverse(camera_->matView);
-
-	// Clip → View
-	Vector4 view = Multiply(clip, invProj);
-	view.x /= view.w;
-	view.y /= view.w;
-	view.z /= view.w;
-	view.w = 1.0f;
-
-	// View → World
-	Vector4 world = Multiply(view, invView);
-
-	// カメラ位置
-	Vector3 cameraPos = { invView.m[3][0], invView.m[3][1], invView.m[3][2] };
-
-	// 方向 = ワールド点 - カメラ位置
-	Vector3 dir = {
-		world.x - cameraPos.x,
-		world.y - cameraPos.y,
-		world.z - cameraPos.z
-	};
-
-	dir = Normalize(dir);
-
-	ray_.origin = cameraPos;
-	ray_.direction = dir;
-
-	return ray_;
 }
 
 Aim::~Aim() {
