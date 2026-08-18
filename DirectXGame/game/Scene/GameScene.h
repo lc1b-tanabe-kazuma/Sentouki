@@ -1,11 +1,12 @@
 #pragma once
 #include "KamataEngine.h"
 #include "engine/sceneEngine/SceneBase.h"
-#include "Aim.h"
+#include "UI/Aim.h"
 #include "player/Player.h"
 #include "enemy/Enemy.h"
 #include "Skydome/Skydome.h"
 #include "Grand/Ground.h"
+#include "UI/LockOnMark.h"
 
 using namespace KamataEngine;
 
@@ -41,6 +42,8 @@ public:
 
 	void OnCollision();
 
+	std::list<Enemy*> FindLockOnEnemies(const Ray& ray);
+
 private:
 
 	// 3Dモデル
@@ -63,6 +66,13 @@ private:
 	// 敵を複数化(リスト)
 	std::list<Enemy*> enemies_;
 	KamataEngine::Model* modelEnemy_ = nullptr;
+
+	// ロックオンしている敵
+	std::list<Enemy*> lockOnTargets_;
+
+	// ロックマンマーク
+	KamataEngine::Model* modelLockOn_ = nullptr;
+	std::list<LockOnMark*> lockOnMarks_;
 
 	// 敵の発生コマンド
 	std::stringstream enemyPopComands;

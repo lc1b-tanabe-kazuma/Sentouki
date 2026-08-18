@@ -23,6 +23,20 @@ GameScene::~GameScene() {
 	delete skydome_;
 	delete modelGround_;
 	delete ground_;
+
+	// ロックオンマークの解放
+	for(LockOnMark* mark : lockOnMarks_) {
+		delete mark;
+	}
+
+	// ロックオンマークモデルの解放
+	delete modelLockOn_;
+
+	// 敵のロックマンリストの解放
+	lockOnTargets_.clear();
+
+	// 敵の出現コマンドの解放
+	enemyPopComands.str("");
 }
 
 void GameScene::Initialize() {
@@ -46,6 +60,9 @@ void GameScene::Initialize() {
 	// 敵モデル
 	modelEnemy_ = Model::CreateFromOBJ("enemy", true);
 
+	// 敵のロックマンマークモデル
+	modelLockOn_ = Model::CreateFromOBJ("mark", true);
+
 	// 天球
 	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
 	skydome_ = new Skydome;
@@ -53,21 +70,40 @@ void GameScene::Initialize() {
 
 	// 地面モデルの作成
 	modelGround_ = Model::CreateFromOBJ("Ground", true);
+
 	// 地面の生成
 	ground_ = new Ground();
+
 	// 地面の初期化
 	ground_->Initialize(modelGround_, &camera_);
 }
 
 void GameScene::Update() {
 
-	// デスフラグか外に出た時のフラグが立っている敵を削除
-	enemies_.remove_if([](Enemy* enemy) {
+	enemies_.remove_if([this](Enemy* enemy) {
+
 		enemy->OutFlag();
+
 		if(enemy->IsDead() || enemy->IsOut()) {
+
+			// ロックオン対象から削除
+			lockOnTargets_.remove(enemy);
+
+			// この敵に対応するマークを削除
+			lockOnMarks_.remove_if([enemy](LockOnMark* mark) {
+
+				if(mark->GetTarget() == enemy) {
+					delete mark;
+					return true;
+				}
+
+				return false;
+				});
+
 			delete enemy;
 			return true;
 		}
+
 		return false;
 		});
 
@@ -83,16 +119,49 @@ void GameScene::Update() {
 	// 照準の更新
 	aim_->Update();
 
+	// 現在照準が合っている敵を取得
+	Ray ray = aim_->GetRayFromMouse();
+
+	std::list<Enemy*> targets =
+		FindLockOnEnemies(ray);
+
+	// ロックオン対象に追加
+	for(Enemy* target : targets) {
+
+		// まだロックオンしていなければ追加
+		if(std::find(lockOnTargets_.begin(),
+			lockOnTargets_.end(),
+			target) == lockOnTargets_.end()) {
+
+			// ロックオン対象に追加
+			lockOnTargets_.push_back(target);
+
+			// マークを作成
+			LockOnMark* mark = new LockOnMark();
+
+			// このマークが追いかける敵を指定
+			mark->Initialize(modelLockOn_, &camera_, target);
+
+			// マークをリストに追加
+			lockOnMarks_.push_back(mark);
+		}
+	}
+
 	// 攻撃する時
 	if(aim_->IsAttac()) {
 
-		// 弾を出す
-		player_->Attack();
+		// ロックオンした敵すべてに弾を発射
+		for(Enemy* target : lockOnTargets_) {
+			player_->Attack(target);
+		}
+
+		// 発射したらロックオン解除
+		lockOnTargets_.clear();
 	}
 
 #ifdef DEBUG
-ImGui::Begin("camera");
-	ImGui::DragFloat3("rote",&camera_.rotation_.x,0.1f);
+	ImGui::Begin("camera");
+	ImGui::DragFloat3("rote", &camera_.rotation_.x, 0.1f);
 	ImGui::DragFloat3("transe", &camera_.translation_.x, 0.1f);
 	ImGui::End();
 	camera_.UpdateMatrix();
@@ -112,45 +181,17 @@ ImGui::Begin("camera");
 	// 当たり判定
 	OnCollision();
 
+	// ロックオンマークの更新
+	for(LockOnMark* mark : lockOnMarks_) {
+		mark->Update();
+	}
+
 	ground_->Update();
 	skydome_->Update();
 
 	if(input_->TriggerKey(DIK_SPACE)) {
 		SceneManager::GetInstance()->ChangeScene("GameClear");
 	}
-}
-
-void GameScene::Draw() {
-
-	// コマンドリストの取得
-	DirectXCommon* dxCommon_ = DirectXCommon::GetInstance();
-	ID3D12GraphicsCommandList* commandList = dxCommon_->GetCommandList();
-
-	// 3Dオブジェクト描画前処理
-	Model::PreDraw();
-
-	// プレイヤーの描画
-	player_->Draw();
-
-	// 敵キャラの描画
-	for(Enemy* enemy : enemies_) {
-		enemy->Draw();
-	}
-
-	ground_->Draw();
-	skydome_->Draw();
-
-	// 3Dオブジェクト後処理
-	Model::PostDraw();
-
-	// UI描画前処理
-	Sprite::PreDraw(commandList);
-
-	// エイムの描画
-	aim_->Draw();
-
-	// UI描画後処理
-	Sprite::PostDraw();
 }
 
 Vector3 GameScene::GetMouseWorldPosition() {
@@ -271,6 +312,55 @@ void GameScene::UpdateEnemyPopcomand() {
 	}
 }
 
+std::list<Enemy*> GameScene::FindLockOnEnemies(const Ray& ray) {
+
+	std::list<Enemy*> targets;
+
+	// レイから敵までの許容距離
+	const float lockOnRange = 3.0f;
+
+	for(Enemy* enemy : enemies_) {
+
+		// 死んでいる敵は対象外
+		if(enemy->IsDead()) {
+			continue;
+		}
+
+		Vector3 enemyPos = enemy->GetWorldPosition();
+
+		// レイの始点から敵へのベクトル
+		Vector3 toEnemy =
+			enemyPos - ray.origin;
+
+		// レイ方向に対して敵がどれくらい先にいるか
+		float distance =
+			Dot(toEnemy, ray.direction);
+
+		// カメラより後ろにいる敵は無視
+		if(distance < 0.0f) {
+			continue;
+		}
+
+		// レイ上の最近点
+		Vector3 closestPoint =
+			ray.origin + ray.direction * distance;
+
+		// レイから敵までの距離
+		Vector3 difference =
+			enemyPos - closestPoint;
+
+		float distanceFromRay =
+			Length(difference);
+
+		// レイから一定距離以内ならロックオン候補
+		if(distanceFromRay <= lockOnRange) {
+			targets.push_back(enemy);
+		}
+	}
+
+	return targets;
+}
+
 void GameScene::OnCollision() {
 	// 判定対象AとBの座標
 	Vector3 posA, posB;
@@ -295,4 +385,39 @@ void GameScene::OnCollision() {
 		}
 	}
 #pragma endregion
+}
+
+void GameScene::Draw() {
+
+	// コマンドリストの取得
+	DirectXCommon* dxCommon_ = DirectXCommon::GetInstance();
+	ID3D12GraphicsCommandList* commandList = dxCommon_->GetCommandList();
+
+	// 3Dオブジェクト描画前処理
+	Model::PreDraw();
+
+	ground_->Draw();
+	skydome_->Draw();
+
+	player_->Draw();
+
+	for(Enemy* enemy : enemies_) {
+		enemy->Draw();
+	}
+
+	for(LockOnMark* mark : lockOnMarks_) {
+		mark->Draw();
+	}
+
+	// 3Dオブジェクト後処理
+	Model::PostDraw();
+
+	// UI描画前処理
+	Sprite::PreDraw(commandList);
+
+	// エイムの描画
+	aim_->Draw();
+
+	// UI描画後処理
+	Sprite::PostDraw();
 }
