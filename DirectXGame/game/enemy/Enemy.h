@@ -1,11 +1,17 @@
 #pragma once
 #include "KamataEngine.h"
+#include "EnemyBullet.h"
+#include <list>
+
+// 前方宣言
+class Player;
 
 class Enemy {
 public:
-	void Initialize(KamataEngine::Model* model, KamataEngine::Camera* camera);
+	void Initialize(KamataEngine::Model* model, KamataEngine::Camera* camera, KamataEngine::Model* bulletModel, Player* player);
 	void Update();
 	void Draw();
+	~Enemy();
 
 	// ワールド座標を取得
 	KamataEngine::Vector3 GetWorldPosition() const;
@@ -30,6 +36,22 @@ public:
 	// 当たり判定時の処理
 	void OnCollision() { isDead_ = true; }
 
+	// ロックオン済みか取得
+	bool IsLockedOn() const {
+		return isLockedOn_;
+	}
+
+	// ロックオン状態を設定
+	void SetLockedOn(bool isLockedOn) {
+		isLockedOn_ = isLockedOn;
+	}
+
+	void Attack();
+
+	const std::list<EnemyBullet*>& GetBullets() const {
+		return bullets_;
+	}
+
 private:
 
 	// モデル
@@ -50,4 +72,20 @@ private:
 	const float kRadius = 2.5f;
 
 	KamataEngine::Vector3 moveVec_ = { 0, 0, 0 };
+
+	// 一度でもロックオンされたか
+	bool isLockedOn_ = false;
+
+	// 弾
+	std::list<EnemyBullet*> bullets_;
+
+	KamataEngine::Model* bulletModel_ = nullptr;
+
+	// 弾の速度
+	const float bulletSpeed_ = 0.5f;
+
+	float attackTimer_ = 2.0f;
+
+	// プレイヤーのポインタ
+	Player* player_ = nullptr;
 };

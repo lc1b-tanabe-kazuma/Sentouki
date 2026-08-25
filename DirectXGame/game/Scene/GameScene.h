@@ -7,6 +7,7 @@
 #include "Skydome/Skydome.h"
 #include "Grand/Ground.h"
 #include "UI/LockOnMark.h"
+#include "UI/DrawNumber.h"
 
 using namespace KamataEngine;
 
@@ -90,4 +91,14 @@ private:
 	// 地面
 	Ground* ground_ = nullptr;
 	KamataEngine::Model* modelGround_ = nullptr;
+
+	// 効果音
+	uint32_t SEHandle_ = 0;
+	uint32_t SEAudioHandle_ = 0;
+
+	// 数字描画
+	DrawNumber* drawNumber_;
+	uint32_t numberTH_ = 0;
+
+	int score_ = 0;
 };
