@@ -1,19 +1,23 @@
 #define NOMINMAX
 #include "Enemy.h"
 #include "MyMath.h"
+#include "player/Player.h"
 #include <algorithm>
 #include <cassert>
 #include <iostream>
 
 using namespace KamataEngine;
 
-void Enemy::Initialize(Model* model, Camera* camera) {
+void Enemy::Initialize(Model* model, Camera* camera, Model* bulletModel, Player* player) {
 
 	// NULLポインタのチェック
 	assert(model);
 
 	// 引数として受け取ったデータをメンバ変数に記録する
 	model_ = model;
+
+	// 弾のモデル
+	bulletModel_ = bulletModel;
 
 	// ワールド変換の初期化
 	worldTranseform_.Initialize();
@@ -22,6 +26,9 @@ void Enemy::Initialize(Model* model, Camera* camera) {
 
 	// 引数の内容をメンバ変数に記録
 	camera_ = camera;
+
+	// プレイヤーのポインタを記録
+	player_ = player;
 }
 
 void Enemy::Update() {
@@ -36,9 +43,51 @@ void Enemy::Update() {
 
 	worldTranseform_.rotation_.y = std::atan2(dir.x, dir.z);
 
+	// 攻撃
+	attackTimer_ -= 1.0f / 30.0f;
+	if(attackTimer_ <= 0.0f) {
+		Attack();
+		attackTimer_ = 2.0f;
+	}
+
+	// 弾の更新
+	for(EnemyBullet* bullet : bullets_) {
+		bullet->Update();
+	}
+
+	// デスフラグが立った弾を削除
+	bullets_.remove_if([](EnemyBullet* bullet) {
+		if(bullet->IsDead()) {
+			delete bullet;
+			return true;
+		}
+		return false;
+		});
+
 	// 行列を定数バッファに転送
-	worldTranseform_.TransferMatrix();
 	WorldTransformUpdate(worldTranseform_);
+}
+
+void Enemy::Attack() {
+	EnemyBullet* bullet = new EnemyBullet();
+
+	Vector3 playerPosition = player_->GetWorldPosition();
+
+	Vector3 direction =
+		playerPosition - GetWorldPosition();
+
+	direction = Normalize(direction);
+
+	Vector3 velocity =
+		direction * bulletSpeed_;
+
+	bullet->Initialize(
+		bulletModel_,
+		GetWorldPosition(),
+		velocity
+	);
+
+	bullets_.push_back(bullet);
 }
 
 Vector3 Enemy::GetWorldPosition() const {
@@ -59,6 +108,17 @@ void Enemy::Draw() {
 	if(!isDead_ && !isOut_) {
 		// 敵の描画
 		model_->Draw(worldTranseform_, *camera_);
+	}
+
+	// 弾の描画
+	for(EnemyBullet* bullet : bullets_) {
+		bullet->Draw(*camera_);
+	}
+}
+
+Enemy::~Enemy() {
+	for(EnemyBullet* bullet : bullets_) {
+		delete bullet;
 	}
 }
 

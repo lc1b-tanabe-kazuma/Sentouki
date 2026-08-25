@@ -23,6 +23,7 @@ GameScene::~GameScene() {
 	delete skydome_;
 	delete modelGround_;
 	delete ground_;
+	delete drawNumber_;
 
 	// ロックオンマークの解放
 	for(LockOnMark* mark : lockOnMarks_) {
@@ -76,6 +77,14 @@ void GameScene::Initialize() {
 
 	// 地面の初期化
 	ground_->Initialize(modelGround_, &camera_);
+
+	// SEの読み込み
+	SEHandle_ = Audio::GetInstance()->LoadWave("audio/SE/Lockon.wav");
+	Audio::GetInstance()->SetVolume(SEAudioHandle_, 1.0f);
+
+	// 数字描画の初期化
+	drawNumber_ = new DrawNumber();
+	drawNumber_->Initialize(TextureManager::Load("UI/number.png"), Vector2(1000.0f, 32.0f));
 }
 
 void GameScene::Update() {
@@ -128,23 +137,28 @@ void GameScene::Update() {
 	// ロックオン対象に追加
 	for(Enemy* target : targets) {
 
-		// まだロックオンしていなければ追加
-		if(std::find(lockOnTargets_.begin(),
-			lockOnTargets_.end(),
-			target) == lockOnTargets_.end()) {
-
-			// ロックオン対象に追加
-			lockOnTargets_.push_back(target);
-
-			// マークを作成
-			LockOnMark* mark = new LockOnMark();
-
-			// このマークが追いかける敵を指定
-			mark->Initialize(modelLockOn_, &camera_, target);
-
-			// マークをリストに追加
-			lockOnMarks_.push_back(mark);
+		// すでに一度ロックオンされている敵は対象外
+		if(target->IsLockedOn()) {
+			continue;
 		}
+
+		// ロックオン済みにする
+		target->SetLockedOn(true);
+
+		// ロックオン対象に追加
+		lockOnTargets_.push_back(target);
+
+		// マークを作成
+		LockOnMark* mark = new LockOnMark();
+
+		// このマークが追いかける敵を指定
+		mark->Initialize(modelLockOn_, &camera_, target);
+
+		// マークをリストに追加
+		lockOnMarks_.push_back(mark);
+
+		// 音をならす
+		Audio::GetInstance()->PlayWave(SEHandle_, false, 1.0f);
 	}
 
 	// 攻撃する時
@@ -185,6 +199,9 @@ void GameScene::Update() {
 	for(LockOnMark* mark : lockOnMarks_) {
 		mark->Update();
 	}
+
+	// 数字描画の更新
+	drawNumber_->Update(static_cast<int>(score_));
 
 	ground_->Update();
 	skydome_->Update();
@@ -284,14 +301,14 @@ void GameScene::UpdateEnemyPopcomand() {
 
 			// 敵を発生させる
 			Enemy* newEnemies = new Enemy();
-			newEnemies->Initialize(modelEnemy_, &camera_);
+			newEnemies->Initialize(modelEnemy_, &camera_, modelBullet_, player_);
 			newEnemies->SetPosition(Vector3(x, y, z));
 			newEnemies->SetMoveVector(Vector3(vx, vy, vz));
 
 			enemies_.push_back(newEnemies);
 
 			// デバッグ出力
-			OutputDebugStringA(("Enemy Spawned at: " + to_string(x) + "," + to_string(y) + "," + to_string(z) + "\n").c_str());
+			//OutputDebugStringA(("Enemy Spawned at: " + to_string(x) + "," + to_string(y) + "," + to_string(z) + "\n").c_str());
 		}
 
 		// WAITコマンド
@@ -381,6 +398,9 @@ void GameScene::OnCollision() {
 				// ---- 通常弾 ----
 				bullet->OnCollision();
 				enemy->OnCollision();
+
+				// スコア加算
+				score_ += 100;
 			}
 		}
 	}
@@ -414,6 +434,9 @@ void GameScene::Draw() {
 
 	// UI描画前処理
 	Sprite::PreDraw(commandList);
+
+	// 数字描画
+	drawNumber_->Draw();
 
 	// エイムの描画
 	aim_->Draw();
