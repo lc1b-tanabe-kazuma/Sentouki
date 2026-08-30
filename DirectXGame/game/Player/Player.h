@@ -25,6 +25,9 @@ public:
 	// 半径を取得
 	float GetRadius() const { return kRadius; }
 
+	// 無敵時間中かどうかを取得
+	bool IsInvincible() const { return isHit_; }
+
 	void OnCollision();
 
 	~Player();

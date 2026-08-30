@@ -417,14 +417,20 @@ void GameScene::OnCollision() {
 			posB = enemyBullet->GetPosition();
 			if(IsCollision(posA, player_->GetRadius(), posB, enemyBullet->GetRadius())) {
 
+				// スコア減算
+				if(score_ >= 100) {
+
+					// プレイヤーが無敵中ならスコア減算しない
+					if(player_->IsInvincible()) {
+						continue;
+					}
+
+					score_ -= 100;
+				}
+
 				// ---- 敵の弾 ----
 				enemyBullet->OnCollision();
 				player_->OnCollision();
-
-				// スコア減算
-				if(score_ >= 100) {
-					score_ -= 100;
-				}
 			}
 		}
 	}
