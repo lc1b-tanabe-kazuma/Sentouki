@@ -22,6 +22,11 @@ public:
 	// 弾リストを取得
 	const std::list<PlayerBullet*>& GetBullets() const { return bullets_; }
 
+	// 半径を取得
+	float GetRadius() const { return kRadius; }
+
+	void OnCollision();
+
 	~Player();
 
 private:
@@ -52,4 +57,10 @@ private:
 
 	const float kMoveLimitX = 30.0f;
 	const float kMoveLimitY = 10.0f;
+
+	// 無敵時間
+	float kInvincibleTime = 2.0f;
+
+	// 被弾フラグ
+	bool isHit_ = false;
 };

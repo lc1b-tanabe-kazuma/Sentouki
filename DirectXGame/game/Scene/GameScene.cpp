@@ -85,6 +85,8 @@ void GameScene::Initialize() {
 	// 数字描画の初期化
 	drawNumber_ = new DrawNumber();
 	drawNumber_->Initialize(TextureManager::Load("UI/number.png"), Vector2(1000.0f, 32.0f));
+
+	score_ = 0;
 }
 
 void GameScene::Update() {
@@ -206,7 +208,8 @@ void GameScene::Update() {
 	ground_->Update();
 	skydome_->Update();
 
-	if(input_->TriggerKey(DIK_SPACE)) {
+	// スコアが2000以上になったらゲームクリアシーンに遷移
+	if(score_ >= 2000) {
 		SceneManager::GetInstance()->ChangeScene("GameClear");
 	}
 }
@@ -401,6 +404,27 @@ void GameScene::OnCollision() {
 
 				// スコア加算
 				score_ += 100;
+			}
+		}
+	}
+
+	// 敵の弾とプレイヤーの当たり判定
+	for(Enemy* enemy : enemies_) {
+		posA = player_->GetWorldPosition();
+
+		// プレイヤーの弾の座標を取得
+		for(EnemyBullet* enemyBullet : enemy->GetBullets()) {
+			posB = enemyBullet->GetPosition();
+			if(IsCollision(posA, player_->GetRadius(), posB, enemyBullet->GetRadius())) {
+
+				// ---- 敵の弾 ----
+				enemyBullet->OnCollision();
+				player_->OnCollision();
+
+				// スコア減算
+				if(score_ >= 100) {
+					score_ -= 100;
+				}
 			}
 		}
 	}
