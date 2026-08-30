@@ -22,6 +22,17 @@ void Player::Initialize(Model* model, Camera* camera, Model* bulletModel, Aim* a
 	aim_ = aim;
 }
 
+void Player::OnCollision() {
+
+	// 無敵時間中は当たり判定を無効化
+	if(isHit_) {
+		return;
+	}
+
+	// 被弾フラグを立てる
+	isHit_ = true;
+}
+
 Player::~Player() {
 	// 弾の解放
 	for(PlayerBullet* bullet : bullets_) {
@@ -46,15 +57,38 @@ void Player::Update() {
 		}
 		return false;
 		});
+
+	// 無敵時間の処理
+	if(isHit_) {
+		kInvincibleTime -= 1.0f / 30.0f; // 30FPSで減算
+	}
+
+	// 無敵時間をリセット
+	if(kInvincibleTime <= 0.0f) {
+		isHit_ = false;
+		kInvincibleTime = 2.0f;
+	}
 }
 
 void Player::Draw() {
-	model_->Draw(worldTransform_, *camera_);
 
 	// 弾の描画
 	for(PlayerBullet* bullet : bullets_) {
 		bullet->Draw(*camera_);
 	}
+
+
+	// 無敵時間中
+	if(isHit_) {
+
+		// 30フレーム周期で点滅
+		if(static_cast<int>(kInvincibleTime * 30.0f) % 10 < 5) {
+			return;
+		}
+	}
+
+	// プレイヤーの描画
+	model_->Draw(worldTransform_, *camera_);
 }
 
 // 移動処理
