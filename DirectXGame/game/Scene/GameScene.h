@@ -8,6 +8,7 @@
 #include "Grand/Ground.h"
 #include "UI/LockOnMark.h"
 #include "UI/DrawNumber.h"
+#include "Boss/Boss.h"
 
 using namespace KamataEngine;
 
@@ -44,6 +45,9 @@ public:
 	void OnCollision();
 
 	std::list<Enemy*> FindLockOnEnemies(const Ray& ray);
+
+	// 敵のロックオンしてるか
+	bool IsLockOnTarget(Enemy* enemy) const;
 
 private:
 
@@ -84,6 +88,10 @@ private:
 	// 敵の出現の待機タイマー
 	int32_t waitTimer_ = 0;
 
+	// ボス
+	Boss* boss_ = nullptr;
+	KamataEngine::Model* modelBoss_ = nullptr;
+
 	// 天球
 	Skydome* skydome_ = nullptr;
 	KamataEngine::Model* modelSkydome_ = nullptr;
@@ -101,4 +109,14 @@ private:
 	uint32_t numberTH_ = 0;
 
 	int score_ = 0;
+
+	// BGM関連
+	uint32_t soundDataHandle_ = 0;
+	uint32_t voiceHandle_ = 0;
+
+	// ヒット音のハンドル
+	uint32_t hitSoundHandle_ = 0;
+
+	// プレイヤー被弾音のハンドル
+	uint32_t damageSoundHandle_ = 0;
 };

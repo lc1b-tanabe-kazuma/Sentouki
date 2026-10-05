@@ -158,10 +158,9 @@ void Player::Attack(Enemy* target) {
 	newBullet->Initialize(
 		bulletModel_,
 		GetWorldPosition(),
-		bulletVelocity
+		bulletVelocity,
+		target
 	);
-
-	newBullet->SetTarget(target);
 
 	// リストへ追加
 	bullets_.push_back(newBullet);
