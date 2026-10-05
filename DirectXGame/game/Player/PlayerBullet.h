@@ -6,7 +6,7 @@ class Enemy;
 
 class PlayerBullet {
 public:
-	void Initialize(KamataEngine::Model* model, const KamataEngine::Vector3& position, KamataEngine::Vector3& velocity);
+	void Initialize(KamataEngine::Model* model, const KamataEngine::Vector3& position, KamataEngine::Vector3& velocity,Enemy* target);
 
 	void Update();
 
@@ -25,9 +25,8 @@ public:
 	// スケール設定
 	void setScale(const KamataEngine::Vector3& scale) { worldTranseform_.scale_ = scale; }
 
-	// 目標の敵を設定
-	void SetTarget(Enemy* target) {
-		target_ = target;
+	Enemy* GetTarget() const {
+		return target_;
 	}
 
 private:

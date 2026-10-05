@@ -5,13 +5,16 @@
 
 using namespace KamataEngine;
 
-void PlayerBullet::Initialize(Model* model, const Vector3& position, Vector3& velocity) {
+void PlayerBullet::Initialize(Model* model, const Vector3& position, Vector3& velocity, Enemy* target) {
 
 	// NULLポインタのチェック
 	assert(model);
 
 	// 引数として受け取ったデータをメンバ変数に記録する
 	model_ = model;
+
+	// この弾が狙っている敵を記録
+	target_ = target;
 
 	// ワールド変換の初期化
 	worldTranseform_.Initialize();

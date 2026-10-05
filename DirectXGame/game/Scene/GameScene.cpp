@@ -24,6 +24,8 @@ GameScene::~GameScene() {
 	delete modelGround_;
 	delete ground_;
 	delete drawNumber_;
+	delete boss_;
+	delete modelBoss_;
 
 	// ロックオンマークの解放
 	for(LockOnMark* mark : lockOnMarks_) {
@@ -38,6 +40,9 @@ GameScene::~GameScene() {
 
 	// 敵の出現コマンドの解放
 	enemyPopComands.str("");
+
+	// BGM停止
+	Audio::GetInstance()->StopWave(voiceHandle_);
 }
 
 void GameScene::Initialize() {
@@ -64,6 +69,11 @@ void GameScene::Initialize() {
 	// 敵のロックマンマークモデル
 	modelLockOn_ = Model::CreateFromOBJ("mark", true);
 
+	// ボスモデル
+	modelBoss_ = Model::CreateFromOBJ("enemy", true);
+	boss_ = new Boss();
+	boss_->Initialize(modelBoss_, &camera_);
+
 	// 天球
 	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
 	skydome_ = new Skydome;
@@ -87,6 +97,16 @@ void GameScene::Initialize() {
 	drawNumber_->Initialize(TextureManager::Load("UI/number.png"), Vector2(1000.0f, 32.0f));
 
 	score_ = 0;
+
+	// BGMの読み込みと再生
+	soundDataHandle_ = Audio::GetInstance()->LoadWave("audio/BGM/game.wav");
+	voiceHandle_ = Audio::GetInstance()->PlayWave(soundDataHandle_, true, 0.025f);
+
+	// ヒット音のロード
+	hitSoundHandle_ = Audio::GetInstance()->LoadWave("audio/SE/HitShot.wav");
+
+	// プレイヤー被弾音のロード
+	damageSoundHandle_ = Audio::GetInstance()->LoadWave("audio/SE/hidan.wav");
 }
 
 void GameScene::Update() {
@@ -194,6 +214,9 @@ void GameScene::Update() {
 	// プレイヤーの更新
 	player_->Update();
 
+	// ボスの更新
+	boss_->Update();
+
 	// 当たり判定
 	OnCollision();
 
@@ -210,6 +233,12 @@ void GameScene::Update() {
 
 	// スコアが2000以上になったらゲームクリアシーンに遷移
 	if(score_ >= 2000) {
+
+		// 音を止める
+		if(Audio::GetInstance()->IsPlaying(voiceHandle_)) {
+			Audio::GetInstance()->StopWave(voiceHandle_);
+		}
+
 		SceneManager::GetInstance()->ChangeScene("GameClear");
 	}
 }
@@ -381,6 +410,19 @@ std::list<Enemy*> GameScene::FindLockOnEnemies(const Ray& ray) {
 	return targets;
 }
 
+// 敵がロックオン対象かどうかを判定
+bool GameScene::IsLockOnTarget(Enemy* enemy) const {
+
+	// ロックオン対象のリストに敵が含まれているかを確認
+	for(Enemy* target : lockOnTargets_) {
+		if(target == enemy) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 void GameScene::OnCollision() {
 	// 判定対象AとBの座標
 	Vector3 posA, posB;
@@ -389,13 +431,24 @@ void GameScene::OnCollision() {
 	const std::list<PlayerBullet*>& playerBullets = player_->GetBullets();
 
 #pragma region プレイヤーの弾と敵の当たり判定
-	// 敵の座標を取得
+	// 敵の弾とプレイヤーの当たり判定
 	for(Enemy* enemy : enemies_) {
+
+		// 敵の座標を取得
 		posA = enemy->GetWorldPosition();
 
-		// プレイヤーの弾の座標を取得
+		// プレイヤーの弾を取得
 		for(PlayerBullet* bullet : playerBullets) {
+
+			// この弾のターゲットではない敵は無視
+			if(bullet->GetTarget() != enemy) {
+				continue;
+			}
+
+			// プレイヤーの弾の座標を取得
 			posB = bullet->GetPosition();
+
+			// 敵に弾が当たったか判定
 			if(IsCollision(posA, enemy->GetRadius(), posB, bullet->GetRadius())) {
 
 				// ---- 通常弾 ----
@@ -404,9 +457,13 @@ void GameScene::OnCollision() {
 
 				// スコア加算
 				score_ += 100;
+
+				// ---- ヒット音の再生 ----
+				Audio::GetInstance()->PlayWave(hitSoundHandle_, false, 0.5f);
 			}
 		}
 	}
+#pragma endregion
 
 	// 敵の弾とプレイヤーの当たり判定
 	for(Enemy* enemy : enemies_) {
@@ -414,6 +471,12 @@ void GameScene::OnCollision() {
 
 		// プレイヤーの弾の座標を取得
 		for(EnemyBullet* enemyBullet : enemy->GetBullets()) {
+
+			// ロックオンしていない敵は弾が当たらない
+			if(!IsLockOnTarget(enemy)) {
+				continue;
+			}
+
 			posB = enemyBullet->GetPosition();
 			if(IsCollision(posA, player_->GetRadius(), posB, enemyBullet->GetRadius())) {
 
@@ -428,13 +491,15 @@ void GameScene::OnCollision() {
 					score_ -= 100;
 				}
 
+				// ---- プレイヤー被弾音の再生 ----
+				Audio::GetInstance()->PlayWave(damageSoundHandle_, false, 0.5f);
+
 				// ---- 敵の弾 ----
 				enemyBullet->OnCollision();
 				player_->OnCollision();
 			}
 		}
 	}
-#pragma endregion
 }
 
 void GameScene::Draw() {
@@ -450,6 +515,7 @@ void GameScene::Draw() {
 	skydome_->Draw();
 
 	player_->Draw();
+	boss_->Draw();
 
 	for(Enemy* enemy : enemies_) {
 		enemy->Draw();
