@@ -38,16 +38,39 @@ private:
 	KamataEngine::WorldTransform worldTransform_;
 
 	// ボタンの状態
-	enum class ButtonState { None, Tutorial };
+	enum class ButtonState { None, Tutorial, StageSelect };
 	ButtonState buttonState_ = ButtonState::None;
 
+	// ステージ選択
+	int stageIndex_ = 0;
+	static const int kMaxStage = 5;
+
+	// 次に表示するステージ
+	int nextStage_ = 0;
+
+	// スライド中か
+	bool isSliding_ = false;
+
+	// スライドタイマー
+	float slideTimer_ = 0.0f;
+
+	// スライド時間
+	const float kSlideDuration_ = 3.0f;
+
+	// スライド方向
+	int slideDirection_ = 1; // 右:1 左:-1
+
+	// タイトルのUI
 	uint32_t UI_titleTH;
 	KamataEngine::Sprite* UI_title;
 
+	// 照準
 	Aim* aim_ = nullptr;
 
+	// 
 	void UpdateUI();
 
+	// 天球
 	Skydome* skydome_ = nullptr;
 	KamataEngine::Model* modelSkydome_;
 
@@ -61,6 +84,12 @@ private:
 
 	float buttonTimer_ = 0.0f;
 
+	// ステージ画像
+	uint32_t stageTH_[kMaxStage];
+
+	// ステージ画像スプライト
+	KamataEngine::Sprite* stageSprites_[kMaxStage];
+
 	// 進むボタン
 	KamataEngine::Sprite* startButtonSprite_ = nullptr;
 	KamataEngine::Vector2 startButtonSize = { 256.0f, 128.0f };
@@ -72,6 +101,18 @@ private:
 	KamataEngine::Vector2 tutorialButtonSize = { 256.0f, 128.0f };
 	KamataEngine::Vector2 tutorialButtonPos = { windowWidth / 1.25f, windowHeight / 1.25f };
 	uint32_t tutorialButtonSpriteTH_ = 0;
+
+	// 右ボタンの位置とサイズ
+	KamataEngine::Vector2 rightButtonPos = { windowWidth / 1.18f, windowHeight / 2.0f };
+	KamataEngine::Vector2 rightButtonSize = { 128.0f, 128.0f };
+	KamataEngine::Sprite* rightButtonSprite_ = nullptr;
+	uint32_t rightButtonSpriteTH_ = 0;
+
+	// 左ボタンの位置とサイズ
+	KamataEngine::Vector2 leftButtonPos = { windowWidth / 6.5f, windowHeight / 2.0f };
+	KamataEngine::Vector2 leftButtonSize = { 128.0f, 128.0f };
+	KamataEngine::Sprite* leftButtonSprite_ = nullptr;
+	uint32_t leftButtonSpriteTH_ = 0;
 
 	// チュートリアル画像
 	KamataEngine::Sprite* tutorialImageSprite_ = nullptr;

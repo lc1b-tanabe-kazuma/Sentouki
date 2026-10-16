@@ -38,6 +38,14 @@ public:
 
 	static void Finalize();
 
+	// ステージ番号の設定と取得
+	void SetStage(int stage) { stageNumber_ = stage; }
+	int GetStage() const { return stageNumber_; }
+
+	// スコアの設定と取得
+	void SetScore(int score) { score_ = score; }
+	int GetScore() const { return score_; }
+
 private:
 	// シーン保存用
 	std::map<std::string, std::unique_ptr<SceneBase>> scenes_;
@@ -56,4 +64,8 @@ private:
 	~SceneManager() = default;
 	SceneManager(const SceneManager&) = delete;
 	SceneManager& operator=(const SceneManager&) = delete;
+
+	// ステージ番号
+	int stageNumber_ = 0;
+	int score_ = 0;
 };
