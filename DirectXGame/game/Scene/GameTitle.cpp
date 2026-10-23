@@ -1,5 +1,6 @@
 #include "GameTitle.h"
 #include "engine/sceneEngine/SceneManager.h"
+#include "imgui.h"
 
 void GameTitle::Initialize() {
 	//
@@ -30,8 +31,8 @@ void GameTitle::Initialize() {
 	stageTH_[3] = TextureManager::Load("uvChecker.png");
 	stageTH_[4] = TextureManager::Load("uvChecker.png");
 
+	// ステージ画像スプライトの作成
 	for(int i = 0; i < kMaxStage; i++) {
-
 		stageSprites_[i] = Sprite::Create(stageTH_[i], { 64.0f, 64.0f });
 		stageSprites_[i]->SetSize({ 512.0f, 256.0f });
 		stageSprites_[i]->SetAnchorPoint({ 0.5f, 0.5f });
@@ -105,7 +106,7 @@ void GameTitle::Update() {
 	// 地面の更新
 	ground_->Update();
 
-	Vector2 mousePos_ = aim_->GetWorldPosition();
+	Vector2 mousePos_ = aim_->GetUIMousePosition();
 
 	// ステージ画像のスライド処理
 	if(isSliding_) {
@@ -118,6 +119,13 @@ void GameTitle::Update() {
 			isSliding_ = false;
 		}
 	}
+
+	// ステージの番号
+#ifdef _DEBUG
+	ImGui::Begin("stageNumber");
+	ImGui::Text("Current Stage: %d", stageIndex_);
+	ImGui::End();
+#endif // DEBUG
 
 	switch(buttonState_) {
 	case GameTitle::ButtonState::None:
