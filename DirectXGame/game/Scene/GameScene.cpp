@@ -243,6 +243,7 @@ void GameScene::Update() {
 	}
 }
 
+// マウスのワールド座標を取得
 Vector3 GameScene::GetMouseWorldPosition() {
 	Ray ray = aim_->GetRayFromMouse();
 
@@ -361,6 +362,7 @@ void GameScene::UpdateEnemyPopcomand() {
 	}
 }
 
+// ロックオンしている敵を取得
 std::list<Enemy*> GameScene::FindLockOnEnemies(const Ray& ray) {
 
 	std::list<Enemy*> targets;
@@ -423,6 +425,7 @@ bool GameScene::IsLockOnTarget(Enemy* enemy) const {
 	return false;
 }
 
+// 当たり判定処理
 void GameScene::OnCollision() {
 	// 判定対象AとBの座標
 	Vector3 posA, posB;

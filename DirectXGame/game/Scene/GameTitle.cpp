@@ -1,5 +1,6 @@
 #include "GameTitle.h"
 #include "engine/sceneEngine/SceneManager.h"
+#include "imgui.h"
 
 void GameTitle::Initialize() {
 	//
@@ -23,6 +24,20 @@ void GameTitle::Initialize() {
 	// 地面の初期化
 	ground_->Initialize(modelGround_, &camera_);
 
+	// ステージ画像
+	stageTH_[0] = TextureManager::Load("uvChecker.png");
+	stageTH_[1] = TextureManager::Load("uvChecker.png");
+	stageTH_[2] = TextureManager::Load("uvChecker.png");
+	stageTH_[3] = TextureManager::Load("uvChecker.png");
+	stageTH_[4] = TextureManager::Load("uvChecker.png");
+
+	// ステージ画像スプライトの作成
+	for(int i = 0; i < kMaxStage; i++) {
+		stageSprites_[i] = Sprite::Create(stageTH_[i], { 64.0f, 64.0f });
+		stageSprites_[i]->SetSize({ 512.0f, 256.0f });
+		stageSprites_[i]->SetAnchorPoint({ 0.5f, 0.5f });
+	}
+
 	// 進むボタンの初期化
 	startButtonSpriteTH_ = TextureManager::Load("UI/Start.png");
 	startButtonSprite_ = Sprite::Create(
@@ -40,6 +55,26 @@ void GameTitle::Initialize() {
 	);
 	tutorialButtonSprite_->SetSize(tutorialButtonSize);
 	tutorialButtonSprite_->SetAnchorPoint({ 0.5f, 0.5f });
+
+	// 右ボタンのスプライトを設定
+	rightButtonSpriteTH_ = TextureManager::Load("UI/UI_arrow.png");
+	rightButtonSprite_ = Sprite::Create(
+		rightButtonSpriteTH_, rightButtonPos, // 初期位置
+		Vector4(1.0f, 1.0f, 1.0f, 1.0f),      // 色
+		Vector2(0.5f, 0.5f)                   // 中央を基準にする
+	);
+	rightButtonSprite_->SetSize(rightButtonSize);
+	rightButtonSprite_->SetAnchorPoint({ 0.5f, 0.5f });
+
+	// 左ボタンのスプライトを設定
+	leftButtonSpriteTH_ = TextureManager::Load("UI/UI_leftArrow.png");
+	leftButtonSprite_ = Sprite::Create(
+		leftButtonSpriteTH_, leftButtonPos, // 初期位置
+		Vector4(1.0f, 1.0f, 1.0f, 1.0f),    // 色
+		Vector2(0.5f, 0.5f)                 // 中央を基準にする
+	);
+	leftButtonSprite_->SetSize(leftButtonSize);
+	leftButtonSprite_->SetAnchorPoint({ 0.5f, 0.5f });
 
 	// チュートリアル画像の初期化
 	tutorialImageSpriteTH_ = TextureManager::Load("UI/rule.png");
@@ -71,13 +106,30 @@ void GameTitle::Update() {
 	// 地面の更新
 	ground_->Update();
 
-	Vector2 mousePos_ = aim_->GetWorldPosition();
+	Vector2 mousePos_ = aim_->GetUIMousePosition();
+
+	// ステージ画像のスライド処理
+	if(isSliding_) {
+		slideTimer_ += 1.0f / 30.0f;
+
+		// スライドが終了したら
+		if(slideTimer_ >= kSlideDuration_) {
+			slideTimer_ = kSlideDuration_;
+			stageIndex_ = nextStage_;
+			isSliding_ = false;
+		}
+	}
+
+	// ステージの番号
+#ifdef _DEBUG
+	ImGui::Begin("stageNumber");
+	ImGui::Text("Current Stage: %d", stageIndex_);
+	ImGui::End();
+#endif // DEBUG
 
 	switch(buttonState_) {
 	case GameTitle::ButtonState::None:
-	{
-
-		// チュートリアルボタンの上にマウスがあるか
+	{	// チュートリアルボタンの上にマウスがあるか
 		bool isTutorialHover = IsMouseOver(mousePos_, tutorialButtonPos, tutorialButtonSize);
 		if(isTutorialHover) {
 			// ボタンの色を点滅させる
@@ -102,7 +154,6 @@ void GameTitle::Update() {
 		bool isStartHover = IsMouseOver(mousePos_, startButtonPos, startButtonSize);
 
 		if(isStartHover) {
-
 			// ボタンの色を点滅させる
 			buttonTimer_ += 1.0f / 30.0f; // タイマーを進める
 			float alpha = (sin(buttonTimer_ * 3.14159f * 2.0f) + 1.0f) / 2.0f * 0.5f + 0.5f;
@@ -116,8 +167,8 @@ void GameTitle::Update() {
 				// シーン遷移前にタイトルBGMを停止
 				Audio::GetInstance()->StopWave(voiceHandle_);
 
-				// ゲームシーンに遷移
-				SceneManager::GetInstance()->ChangeScene("Game");
+				// ステージ選択に遷移する
+				buttonState_ = ButtonState::StageSelect;
 			}
 		} else {
 			// 色を元に戻す
@@ -126,9 +177,7 @@ void GameTitle::Update() {
 		break;
 	}
 	case GameTitle::ButtonState::Tutorial:
-	{
-
-		// スタートボタンの上にマウスがあるか
+	{	// スタートボタンの上にマウスがあるか
 		bool isStartHover = IsMouseOver(mousePos_, startButtonPos, startButtonSize);
 
 		// スタートボタンの場所を右下にする
@@ -158,6 +207,90 @@ void GameTitle::Update() {
 		} else {
 			// 色を元に戻す
 			startButtonSprite_->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+		}
+		break;
+	}
+	case GameTitle::ButtonState::StageSelect:
+	{
+		bool isRightHover = IsMouseOver(mousePos_, rightButtonPos, rightButtonSize);
+		bool isLeftHover = IsMouseOver(mousePos_, leftButtonPos, leftButtonSize);
+		bool isStartHover = IsMouseOver(mousePos_, startButtonPos, startButtonSize);
+
+		// 右ボタンの上にある時
+		if(isRightHover) {
+			// ボタンの色を点滅させる
+			buttonTimer_ += 1.0f / 30.0f; // タイマーを進める
+			float alpha = (sin(buttonTimer_ * 3.14159f * 2.0f) + 1.0f) / 2.0f * 0.5f + 0.5f;
+			rightButtonSprite_->SetColor({ 1.0f, 1.0f, 1.0f, alpha });
+
+			// 左クリック
+			if(input_->IsTriggerMouse(0) && !isSliding_) {
+				// ステージ変更
+				nextStage_ = stageIndex_ + 1;
+
+				// ステージが最大値を超えた場合は0に戻す
+				if(nextStage_ >= kMaxStage) {
+					nextStage_ = 0;
+				}
+
+				// スライド方向を右に設定
+				slideDirection_ = 1;
+
+				// スライド開始
+				isSliding_ = true;
+				slideTimer_ = 0.0f;
+			}
+		} else {
+			// 色を元に戻す
+			rightButtonSprite_->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+		}
+
+		// 左ボタンの上にある時
+		if(isLeftHover) {
+			// ボタンの色を点滅させる
+			buttonTimer_ += 1.0f / 30.0f; // タイマーを進める
+			float alpha = (sin(buttonTimer_ * 3.14159f * 2.0f) + 1.0f) / 2.0f * 0.5f + 0.5f;
+			leftButtonSprite_->SetColor({ 1.0f, 1.0f, 1.0f, alpha });
+
+			// 左クリック
+			if(input_->IsTriggerMouse(0) && !isSliding_) {
+
+				// ステージ変更
+				nextStage_ = stageIndex_ - 1;
+
+				// ステージが0未満になった場合は最大値に戻す
+				if(nextStage_ < 0) {
+					nextStage_ = kMaxStage - 1;
+				}
+				// スライド方向を左に設定
+				slideDirection_ = -1;
+
+				// スライド開始
+				isSliding_ = true;
+				slideTimer_ = 0.0f;
+			}
+		} else {
+			// 色を元に戻す
+			leftButtonSprite_->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+		}
+
+		// スタートボタンの上にある時
+		if(isStartHover) {
+			// ボタンの色を点滅させる
+			buttonTimer_ += 1.0f / 30.0f; // タイマーを進める
+			float alpha = (sin(buttonTimer_ * 3.14159f * 2.0f) + 1.0f) / 2.0f * 0.5f + 0.5f;
+			startButtonSprite_->SetColor({ 1.0f, 1.0f, 1.0f, alpha });
+
+			// 左クリック
+			if(input_->IsTriggerMouse(0) && !isSliding_) {
+
+				// ステージをSceneManagerに設定
+				SceneManager::GetInstance()->SetStage(stageIndex_);
+
+				// シーンをゲームシーンに切り替える
+				SceneManager::GetInstance()->ChangeScene("Game");
+				break;
+			}
 		}
 		break;
 	}
@@ -199,6 +332,33 @@ void GameTitle::Draw() {
 		// チュートリアル画像の描画
 		tutorialImageSprite_->Draw();
 		break;
+	case GameTitle::ButtonState::StageSelect:
+
+		// 右ボタンの描画
+		rightButtonSprite_->Draw();
+
+		// 左ボタンの描画
+		leftButtonSprite_->Draw();
+
+		if(isSliding_) {
+			float t = slideTimer_ / kSlideDuration_;
+
+			// 現在の画像が画面外へ移動
+			float currentX = 640.0f - (t * 1280.0f * slideDirection_);
+
+			// 次の画像が画面中央へ移動
+			float nextX = 640.0f + ((1.0f - t) * 1280.0f * slideDirection_);
+
+			stageSprites_[stageIndex_]->SetPosition({ currentX, 360.0f });
+			stageSprites_[stageIndex_]->Draw();
+
+			stageSprites_[nextStage_]->SetPosition({ nextX, 360.0f });
+			stageSprites_[nextStage_]->Draw();
+		} else {
+			stageSprites_[stageIndex_]->SetPosition({ 640.0f, 360.0f });
+			stageSprites_[stageIndex_]->Draw();
+		}
+		break;
 	}
 
 	// スタートボタンの描画
@@ -220,8 +380,12 @@ GameTitle::~GameTitle() {
 	delete startButtonSprite_;
 	delete tutorialButtonSprite_;
 	delete tutorialImageSprite_;
+	delete rightButtonSprite_;
+	delete leftButtonSprite_;
+	for(int i = 0; i < kMaxStage; i++) {
+		delete stageSprites_[i];
+	}
 
 	// シーン遷移前にタイトルBGMを停止
 	Audio::GetInstance()->StopWave(voiceHandle_);
-
 }

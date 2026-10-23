@@ -27,6 +27,8 @@ public:
 	// 座標のゲッター
 	KamataEngine::Vector2 GetWorldPosition() const { return mousePos_; }
 
+	KamataEngine::Vector2 GetUIMousePosition() const;
+
 	~Aim();
 
 private:

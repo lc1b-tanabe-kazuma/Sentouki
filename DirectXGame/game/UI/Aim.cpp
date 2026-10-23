@@ -153,6 +153,13 @@ Vector3 Aim::GetForward() {
 	return forward;
 }
 
+Vector2 Aim::GetUIMousePosition() const {
+	return {
+		mousePos_.x * 1280.0f / width,
+		mousePos_.y * 720.0f / height
+	};
+}
+
 Aim::~Aim() {
 	if(sprite_) {
 		delete sprite_;
