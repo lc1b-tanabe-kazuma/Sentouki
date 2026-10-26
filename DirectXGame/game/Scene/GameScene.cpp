@@ -107,6 +107,10 @@ void GameScene::Initialize() {
 
 	// プレイヤー被弾音のロード
 	damageSoundHandle_ = Audio::GetInstance()->LoadWave("audio/SE/hidan.wav");
+
+	// ステージ番号を設定
+	StageNumber_ = SceneManager::GetInstance()->GetStage();
+
 }
 
 void GameScene::Update() {
@@ -258,7 +262,10 @@ void GameScene::LoadEnemyPopData() {
 
 	// ファイルを開く
 	ifstream file;
-	file.open("Resources/enemy/enemyPopData.csv");
+
+	// ステージ番号に応じて読み込むファイルを変更
+	string filePath = "Resources/enemy/enemyPopData" + to_string(StageNumber_) + ".csv";
+	file.open(filePath);
 
 #ifdef DEBUG
 	assert(file.is_open());
