@@ -119,4 +119,7 @@ private:
 
 	// プレイヤー被弾音のハンドル
 	uint32_t damageSoundHandle_ = 0;
+
+	// ステージ番号
+	int StageNumber_ = 0;
 };
