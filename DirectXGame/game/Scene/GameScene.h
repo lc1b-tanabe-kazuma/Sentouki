@@ -9,6 +9,7 @@
 #include "UI/LockOnMark.h"
 #include "UI/DrawNumber.h"
 #include "Boss/Boss.h"
+#include "Stage/StageClearCondition.h"
 
 using namespace KamataEngine;
 
@@ -122,4 +123,7 @@ private:
 
 	// ステージ番号
 	int StageNumber_ = 0;
+
+	// クリア条件
+	StageClearCondition* clearCondition_ = nullptr;
 };

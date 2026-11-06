@@ -6,6 +6,8 @@
 #include <fstream>
 #include <numbers>
 #include "MyMath.h"
+#include "Stage/StageScore.h"
+#include "Stage/StageBoss.h"
 
 using namespace std;
 using namespace KamataEngine;
@@ -111,6 +113,16 @@ void GameScene::Initialize() {
 	// ステージ番号を設定
 	StageNumber_ = SceneManager::GetInstance()->GetStage();
 
+	// クリア条件の設定
+	switch(StageNumber_) {
+	case 0:
+		clearCondition_ = new StageScore(&score_);
+		break;
+
+	case 1:
+		clearCondition_ = new StageBoss(boss_);
+		break;
+	}
 }
 
 void GameScene::Update() {
@@ -235,14 +247,15 @@ void GameScene::Update() {
 	ground_->Update();
 	skydome_->Update();
 
-	// スコアが2000以上になったらゲームクリアシーンに遷移
-	if(score_ >= 2000) {
+	// クリア条件をチェック
+	if(clearCondition_->IsClear()) {
 
 		// 音を止める
 		if(Audio::GetInstance()->IsPlaying(voiceHandle_)) {
 			Audio::GetInstance()->StopWave(voiceHandle_);
 		}
 
+		// ゲームクリアシーンに遷移
 		SceneManager::GetInstance()->ChangeScene("GameClear");
 	}
 }
