@@ -160,6 +160,16 @@ Vector2 Aim::GetUIMousePosition() const {
 	};
 }
 
+KamataEngine::Vector3 Aim::GetPositionOnPlane(float z) {
+	// マウス位置からRayを取得
+	Ray ray = GetRayFromMouse();
+
+	// Z平面との交点を計算
+	float t = (z - ray.origin.z) / ray.direction.z;
+
+	return ray.origin + ray.direction * t;
+}
+
 Aim::~Aim() {
 	if(sprite_) {
 		delete sprite_;

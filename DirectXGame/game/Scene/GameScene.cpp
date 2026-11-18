@@ -37,6 +37,9 @@ GameScene::~GameScene() {
 	// ロックオンマークモデルの解放
 	delete modelLockOn_;
 
+	// クリア条件の解放
+	delete clearCondition_;
+
 	// 敵のロックマンリストの解放
 	lockOnTargets_.clear();
 

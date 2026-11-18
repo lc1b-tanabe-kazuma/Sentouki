@@ -1,7 +1,6 @@
 #define NOMINMAX
 #include "Player.h"
 #include "MyMath.h"
-#include "UI/Aim.h"
 #include "enemy/Enemy.h"
 
 using namespace KamataEngine;
@@ -77,7 +76,6 @@ void Player::Draw() {
 		bullet->Draw(*camera_);
 	}
 
-
 	// 無敵時間中
 	if(isHit_) {
 
@@ -138,13 +136,7 @@ void Player::Attack(Enemy* target) {
 	} else {
 
 		// ロックオンしていない場合は今まで通り
-		Ray ray = aim_->GetRayFromMouse();
-
-		// Z=22.5の平面との交点
-		float t = (kAimZ - ray.origin.z) / ray.direction.z;
-
-		Vector3 targetPos =
-			ray.origin + ray.direction * t;
+		Vector3 targetPos = aim_->GetPositionOnPlane(kAimZ);
 
 		// プレイヤー → 交点
 		bulletDir =

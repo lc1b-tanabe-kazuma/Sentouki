@@ -22,7 +22,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #endif
 
 	// カーソルを隠す
-	ShowCursor(FALSE);
+	while(ShowCursor(FALSE) >= 0) {
+	}
 
 	// メインループ
 	while(true) {

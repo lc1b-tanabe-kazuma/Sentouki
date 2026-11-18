@@ -13,8 +13,6 @@ void LockOnMark::Initialize(Model* model, Camera* camera, Enemy* target) {
 	// ワールドトランスフォームの初期化
 	worldTransform_.Initialize();
 	worldTransform_.scale_ = { 1.5f, 1.5f, 1.5f };
-
-	camera_->Initialize();
 }
 
 void LockOnMark::Update() {
