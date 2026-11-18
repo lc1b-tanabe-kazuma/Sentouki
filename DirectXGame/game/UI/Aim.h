@@ -29,6 +29,8 @@ public:
 
 	KamataEngine::Vector2 GetUIMousePosition() const;
 
+	KamataEngine::Vector3 GetPositionOnPlane(float z);
+
 	~Aim();
 
 private:

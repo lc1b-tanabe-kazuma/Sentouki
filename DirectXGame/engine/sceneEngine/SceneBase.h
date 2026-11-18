@@ -12,8 +12,12 @@ public:
 	//
 	void SetActive(bool active) { isActive_ = active; }
 	bool IsActive() const { return isActive_; }
-
 protected:
+	KamataEngine::Input* GetInput() const {
+		return input_;
+	}
+
+private:
 	KamataEngine::Input* input_;
 	bool isActive_ = true; // デフォルトは動く
 };

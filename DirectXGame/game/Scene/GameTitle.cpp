@@ -138,7 +138,7 @@ void GameTitle::Update() {
 			tutorialButtonSprite_->SetColor({ 1.0f, 1.0f, 1.0f, alpha });
 
 			// 左クリック
-			if(input_->IsTriggerMouse(0)) {
+			if(GetInput()->IsTriggerMouse(0)) {
 				// 決定音を単発再生
 				Audio::GetInstance()->PlayWave(clickSoundHandle_, false, 0.1f);
 
@@ -160,7 +160,7 @@ void GameTitle::Update() {
 			startButtonSprite_->SetColor({ 1.0f, 1.0f, 1.0f, alpha });
 
 			// 左クリック
-			if(input_->IsTriggerMouse(0)) {
+			if(GetInput()->IsTriggerMouse(0)) {
 				// 決定音を単発再生
 				Audio::GetInstance()->PlayWave(clickSoundHandle_, false, 0.1f);
 
@@ -192,7 +192,7 @@ void GameTitle::Update() {
 			startButtonSprite_->SetColor({ 1.0f, 1.0f, 1.0f, alpha });
 
 			// 左クリック
-			if(input_->IsTriggerMouse(0)) {
+			if(GetInput()->IsTriggerMouse(0)) {
 
 				// 決定音を単発再生
 				Audio::GetInstance()->PlayWave(clickSoundHandle_, false, 0.1f);
@@ -224,7 +224,7 @@ void GameTitle::Update() {
 			rightButtonSprite_->SetColor({ 1.0f, 1.0f, 1.0f, alpha });
 
 			// 左クリック
-			if(input_->IsTriggerMouse(0) && !isSliding_) {
+			if(GetInput()->IsTriggerMouse(0) && !isSliding_) {
 				// ステージ変更
 				nextStage_ = stageIndex_ + 1;
 
@@ -253,7 +253,7 @@ void GameTitle::Update() {
 			leftButtonSprite_->SetColor({ 1.0f, 1.0f, 1.0f, alpha });
 
 			// 左クリック
-			if(input_->IsTriggerMouse(0) && !isSliding_) {
+			if(GetInput()->IsTriggerMouse(0) && !isSliding_) {
 
 				// ステージ変更
 				nextStage_ = stageIndex_ - 1;
@@ -282,7 +282,7 @@ void GameTitle::Update() {
 			startButtonSprite_->SetColor({ 1.0f, 1.0f, 1.0f, alpha });
 
 			// 左クリック
-			if(input_->IsTriggerMouse(0) && !isSliding_) {
+			if(GetInput()->IsTriggerMouse(0) && !isSliding_) {
 
 				// ステージをSceneManagerに設定
 				SceneManager::GetInstance()->SetStage(stageIndex_);

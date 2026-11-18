@@ -1,9 +1,9 @@
 #pragma once
 #include "KamataEngine.h"
 #include "PlayerBullet.h"
+#include "UI/Aim.h"
 
 // 前方宣言
-class Aim;
 class Enemy;
 
 class Player {
