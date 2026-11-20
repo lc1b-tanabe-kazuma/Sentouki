@@ -2,6 +2,8 @@
 #include "Player.h"
 #include "MyMath.h"
 #include "enemy/Enemy.h"
+#include "PlayerState/NormalState.h"
+#include "PlayerState/InvincibleState.h"
 
 using namespace KamataEngine;
 
@@ -19,17 +21,21 @@ void Player::Initialize(Model* model, Camera* camera, Model* bulletModel, Aim* a
 	input_ = Input::GetInstance();
 
 	aim_ = aim;
+
+	// 通常状態で開始
+	currentState_ = std::make_unique<NormalState>();
 }
 
 void Player::OnCollision() {
 
-	// 無敵時間中は当たり判定を無効化
-	if(isHit_) {
+	// 無敵状態、または無敵状態への切り替え待ちなら何もしない
+	if(IsInvincible()) {
 		return;
 	}
 
-	// 被弾フラグを立てる
-	isHit_ = true;
+	if(currentState_) {
+		currentState_->OnCollision(this);
+	}
 }
 
 Player::~Player() {
@@ -41,6 +47,12 @@ Player::~Player() {
 }
 
 void Player::Update() {
+
+	// 保留中のState切り替えを反映
+	if(pendingState_) {
+		currentState_ = std::move(pendingState_);
+	}
+
 	Move();
 
 	// 弾の更新
@@ -57,15 +69,14 @@ void Player::Update() {
 		return false;
 		});
 
-	// 無敵時間の処理
-	if(isHit_) {
-		kInvincibleTime -= 1.0f / 30.0f; // 30FPSで減算
+	// 現在のStateを更新
+	if(currentState_) {
+		currentState_->Update(this);
 	}
 
-	// 無敵時間をリセット
-	if(kInvincibleTime <= 0.0f) {
-		isHit_ = false;
-		kInvincibleTime = 2.0f;
+	// Stateの更新中に要求された切り替えを反映
+	if(pendingState_) {
+		currentState_ = std::move(pendingState_);
 	}
 }
 
@@ -76,13 +87,9 @@ void Player::Draw() {
 		bullet->Draw(*camera_);
 	}
 
-	// 無敵時間中
-	if(isHit_) {
-
-		// 30フレーム周期で点滅
-		if(static_cast<int>(kInvincibleTime * 30.0f) % 10 < 5) {
-			return;
-		}
+	// Stateによってプレイヤーの表示を制御
+	if(currentState_ && !currentState_->IsVisible()) {
+		return;
 	}
 
 	// プレイヤーの描画
