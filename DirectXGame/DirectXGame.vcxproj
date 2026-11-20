@@ -84,7 +84,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;_DEBUG;USE_IMGUI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine;$(ProjectDir)Scene;$(ProjectDir)game;$(ProjectDir)player;$(ProjectDir)UI;$(ProjectDir)Boss;$(ProjectDir)Stage;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine;$(ProjectDir)Scene;$(ProjectDir)game;$(ProjectDir)player;$(ProjectDir)UI;$(ProjectDir)Boss;$(ProjectDir)Stage;$(ProjectDir)game/Scene/Title;$(ProjectDir)game/Scene/Title/TitleState;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
@@ -114,7 +114,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine;$(ProjectDir)Scene;$(ProjectDir)game;$(ProjectDir)player;$(ProjectDir)UI;$(ProjectDir)Boss;$(ProjectDir)Stage;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine;$(ProjectDir)Scene;$(ProjectDir)game;$(ProjectDir)player;$(ProjectDir)UI;$(ProjectDir)Boss;$(ProjectDir)Stage;$(ProjectDir)game/Scene/Title;$(ProjectDir)game/Scene/Title/TitleState;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <Optimization>MinSpace</Optimization>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -148,7 +148,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;USE_IMGUI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine;$(ProjectDir)Scene;$(ProjectDir)game;$(ProjectDir)player;$(ProjectDir)UI;$(ProjectDir)Boss;$(ProjectDir)Stage;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine;$(ProjectDir)Scene;$(ProjectDir)game;$(ProjectDir)player;$(ProjectDir)UI;$(ProjectDir)Boss;$(ProjectDir)Stage;$(ProjectDir)game/Scene/Title;$(ProjectDir)game/Scene/Title/TitleState;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <Optimization>Disabled</Optimization>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -183,7 +183,7 @@
     <ClCompile Include="engine\Fade.cpp" />
     <ClCompile Include="game\Scene\GameClear.cpp" />
     <ClCompile Include="game\Scene\GameScene.cpp" />
-    <ClCompile Include="game\Scene\GameTitle.cpp" />
+    <ClCompile Include="game\Scene\Title\GameTitle.cpp" />
     <ClCompile Include="game\Grand\Ground.cpp" />
     <ClCompile Include="game\UI\LockOnMark.cpp" />
     <ClCompile Include="main.cpp" />
@@ -195,10 +195,14 @@
     <ClCompile Include="game\Skydome\Skydome.cpp" />
     <ClCompile Include="game\Stage\StageScore.cpp" />
     <ClCompile Include="game\Stage\StageBoss.cpp" />
+    <ClCompile Include="game\Scene\Title\TitleState\NoneState.cpp" />
+    <ClCompile Include="game\Scene\Title\TitleState\TutorialState.cpp" />
+    <ClCompile Include="game\Scene\Title\TitleState\StageSelectState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\Boss\Boss.h" />
     <ClInclude Include="game\enemy\EnemyBullet.h" />
+    <ClInclude Include="game\Scene\Title\TitleState\TitleStateBase.h" />
     <ClInclude Include="game\Stage\StageClearCondition.h" />
     <ClInclude Include="game\UI\DrawNumber.h" />
     <ClInclude Include="game\enemy\Enemy.h" />
@@ -206,7 +210,7 @@
     <ClInclude Include="engine\Fade.h" />
     <ClInclude Include="game\Scene\GameClear.h" />
     <ClInclude Include="game\Scene\GameScene.h" />
-    <ClInclude Include="game\Scene\GameTitle.h" />
+    <ClInclude Include="game\Scene\Title\GameTitle.h" />
     <ClInclude Include="engine\sceneEngine\SceneBase.h" />
     <ClInclude Include="engine\sceneEngine\SceneManager.h" />
     <ClInclude Include="engine\sceneEngine\SceneTransition.h" />
@@ -219,6 +223,9 @@
     <ClInclude Include="game\UI\LockOnMark.h" />
     <ClInclude Include="game\Stage\StageScore.h" />
     <ClInclude Include="game\Stage\StageBoss.h" />
+    <ClInclude Include="game\Scene\Title\TitleState\NoneState.h" />
+    <ClInclude Include="game\Scene\Title\TitleState\TutorialState.h" />
+    <ClInclude Include="game\Scene\Title\TitleState\StageSelectState.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
