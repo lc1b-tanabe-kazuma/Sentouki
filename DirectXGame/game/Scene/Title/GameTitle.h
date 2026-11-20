@@ -4,8 +4,16 @@
 #include "UI/Aim.h"
 #include "Skydome/Skydome.h"
 #include "Grand/Ground.h"
+#include <memory>
+#include "TitleState/TitleStateBase.h"
+#include <utility>
 
 using namespace KamataEngine;
+
+// Stateクラスの前方宣言
+class NoneState;
+class TutorialState;
+class StageSelectState;
 
 // ゲームシーン
 class GameTitle : public SceneBase {
@@ -24,6 +32,11 @@ public:
 	// マウスがボタンの上にあるか判定
 	bool IsMouseOver(KamataEngine::Vector2 mouse, KamataEngine::Vector2 pos, KamataEngine::Vector2 size);
 
+	// タイトルの状態
+	void ChangeState(std::unique_ptr<TitleStateBase> newState) {
+		pendingState_ = std::move(newState);
+	}
+
 	~GameTitle();
 
 private:
@@ -37,9 +50,16 @@ private:
 	// ワールドトランスフォーム
 	KamataEngine::WorldTransform worldTransform_;
 
-	// ボタンの状態
-	enum class ButtonState { None, Tutorial, StageSelect };
-	ButtonState buttonState_ = ButtonState::None;
+	// タイトルの状態
+	friend class NoneState;
+	friend class TutorialState;
+	friend class StageSelectState;
+
+	// 現在のState
+	std::unique_ptr<TitleStateBase> currentState_;
+
+	// 次に切り替えるState
+	std::unique_ptr<TitleStateBase> pendingState_;
 
 	// ステージ選択
 	int stageIndex_ = 0;

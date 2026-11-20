@@ -27,7 +27,7 @@
     <ClCompile Include="game\Scene\GameScene.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="game\Scene\GameTitle.cpp">
+    <ClCompile Include="game\Scene\Title\GameTitle.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="engine\sceneEngine\SceneManager.cpp">
@@ -75,6 +75,15 @@
     <ClCompile Include="game\Stage\StageBoss.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="game\Scene\Title\TitleState\NoneState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="game\Scene\Title\TitleState\TutorialState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="game\Scene\Title\TitleState\StageSelectState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\UI\Aim.h">
@@ -86,7 +95,7 @@
     <ClInclude Include="game\Scene\GameScene.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="game\Scene\GameTitle.h">
+    <ClInclude Include="game\Scene\Title\GameTitle.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="engine\sceneEngine\SceneBase.h">
@@ -141,6 +150,18 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="game\Stage\StageBoss.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Scene\Title\TitleState\TitleStateBase.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Scene\Title\TitleState\NoneState.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Scene\Title\TitleState\TutorialState.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Scene\Title\TitleState\StageSelectState.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
