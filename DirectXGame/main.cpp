@@ -4,6 +4,19 @@
 
 using namespace KamataEngine;
 
+// カーソルの表示・非表示を切り替える
+void SetCursorVisible(bool visible) {
+	static bool isVisible = true;
+
+	if(isVisible == visible) {
+		return;
+	}
+
+	ShowCursor(visible);
+
+	isVisible = visible;
+}
+
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
@@ -22,8 +35,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #endif
 
 	// カーソルを隠す
-	while(ShowCursor(FALSE) >= 0) {
-	}
+	SetCursorVisible(false);
 
 	// メインループ
 	while(true) {
@@ -62,12 +74,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		bool isImGui = false;
 #endif
 
+		// ImGuiがマウスをキャプチャしている場合、またはクライアント領域外にマウスがある場合はカーソルを表示
 		if(isImGui || !isInsideClient) {
-			while(ShowCursor(TRUE) < 0)
-				;
+			SetCursorVisible(true);
 		} else {
-			while(ShowCursor(FALSE) >= 0)
-				;
+			SetCursorVisible(false);
 		}
 
 #ifdef _DEBUG
