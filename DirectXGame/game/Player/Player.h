@@ -2,6 +2,8 @@
 #include "KamataEngine.h"
 #include "PlayerBullet.h"
 #include "UI/Aim.h"
+#include <memory>
+#include "PlayerStateBase.h"
 
 // 前方宣言
 class Enemy;
@@ -25,10 +27,16 @@ public:
 	// 半径を取得
 	float GetRadius() const { return kRadius; }
 
-	// 無敵時間中かどうかを取得
-	bool IsInvincible() const { return isHit_; }
-
 	void OnCollision();
+
+	// 無敵時間中かどうかを取得
+	bool IsInvincible() const {
+		if(pendingState_) {
+			return pendingState_->IsInvincible();
+		}
+
+		return currentState_ && currentState_->IsInvincible();
+	}
 
 	~Player();
 
@@ -36,6 +44,21 @@ private:
 	KamataEngine::Model* model_;
 	KamataEngine::WorldTransform worldTransform_;
 	KamataEngine::Camera* camera_ = nullptr;
+
+	// StateクラスからPlayerの状態変更を許可
+	friend class NormalState;
+	friend class InvincibleState;
+
+	// 現在のState
+	std::unique_ptr<PlayerStateBase> currentState_;
+
+	// 次に切り替えるState
+	std::unique_ptr<PlayerStateBase> pendingState_;
+
+	// State切り替え
+	void ChangeState(std::unique_ptr<PlayerStateBase> newState) {
+		pendingState_ = std::move(newState);
+	}
 
 	// キーボード入力
 	KamataEngine::Input* input_ = nullptr;
@@ -60,10 +83,4 @@ private:
 
 	const float kMoveLimitX = 30.0f;
 	const float kMoveLimitY = 10.0f;
-
-	// 無敵時間
-	float kInvincibleTime = 2.0f;
-
-	// 被弾フラグ
-	bool isHit_ = false;
 };
